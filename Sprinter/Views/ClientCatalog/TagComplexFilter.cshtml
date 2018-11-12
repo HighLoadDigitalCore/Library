@@ -1,0 +1,23 @@
+﻿@model TagComplexFilter
+@if (Model != null && Model.Visible && Model.TagComplexFilterLists.Any())
+{
+    <div class="green_bg">
+        <h2>
+            Подбор по параметрам</h2>
+        @using (Html.BeginForm())
+        {
+            foreach (var list in Model.TagComplexFilterLists)
+            {
+                if (!list.ItemHeader.IsNullOrEmpty() && list.TagComplexFilterItems.Any())
+                {
+
+            <label>
+                @list.ItemHeader:</label>
+            @Html.DropDownList("TagList_" + list.ID, list.DropDownItems)
+                }
+            }
+            
+            <input id="complexFilterSubmit" type="submit" value="Подобрать">
+        }
+    </div>
+}

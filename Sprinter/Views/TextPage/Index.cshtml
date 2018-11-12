@@ -1,0 +1,15 @@
+﻿@model PageTextData
+@if (Model != null)
+{
+    <div class="content_block">
+        @if (Model.ShowHeader)
+        {
+            <h2>
+                @(Html.Raw(Model.CMSPage.FullName.IsNullOrEmpty() ? Model.CMSPage.PageName : Model.CMSPage.FullName))
+            </h2>
+            <div class="text-content">
+                @Html.Raw(Model.Text)
+            </div>
+        }
+    </div>
+}

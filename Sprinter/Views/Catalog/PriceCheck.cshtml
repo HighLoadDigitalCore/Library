@@ -1,0 +1,147 @@
+﻿@{
+    ViewBag.Title = "Проверка цен";
+    Layout = "~/Views/Shared/_Master.cshtml";
+}
+@model MasterSearchViewModel
+<h2>
+    Проверка цен</h2>
+
+@Html.Partial("CatalogSearchForm", Model.SearchData)
+
+<div class="backref">
+    @Html.Raw(ViewBag.Link)
+</div>
+<fieldset>
+    <table style="width: 70%;" id="change-tbl">
+        <tr>
+            <td colspan="3">
+                <b>Переопределить цену (необходимо указывать знак):</b>
+            </td>
+        </tr>
+        <tr>
+            <td style="width: 100px">@Html.TextBox("Override", "", new { style = "width:90%" })
+            </td>
+            <td style="width: 120px">
+                @Html.DropDownList("ValueType", ViewBag.ValueType as SelectList, new {style="width:90%"})
+            </td>
+            <td style="width: 190px">от @Html.DropDownList("ConcurentList", ViewBag.ConcurentList as SelectList, new {style="width:150px"})</td>
+        </tr>
+        <tr>
+            <td colspan="3" id="messageCellChange"></td>
+        </tr>
+        <tr>
+            <td colspan="3">
+                <input type="submit" style="width: 100px; float: left" value="Сохранить" />
+            </td>
+        </tr>
+    </table>
+</fieldset>
+<fieldset>
+    <table style="width: 30%;" id="tag-tbl">
+        <tr>
+            <td colspan="2">
+                <b>Установить наценку, %:</b>
+            </td>
+        </tr>
+        <tr>
+            <td colspan="2">@Html.TextBox("Margin", "", new { style = "width:95%" })
+            </td>
+        </tr>
+        <tr>
+            <td colspan="2" id="messageCell"></td>
+        </tr>
+        <tr>
+            <td colspan="2">
+                <input type="submit" style="width: 100px; float: left" value="Сохранить" />
+            </td>
+        </tr>
+    </table>
+</fieldset>
+@Html.Partial("CatalogOverPricedList", Model)
+
+
+@section scripts
+{
+    @Scripts.Render("~/bundles/jqueryval")
+    @Scripts.Render("~/bundles/jqueryui")
+    <script type="text/javascript">
+
+        var saveLink = '@Url.Action("SaveMargin", "Catalog")';
+        var overrideLink = '@Url.Action("OverrideMargin", "Catalog")';
+
+        function showMsg(msg) {
+            $('#messageCell').html(msg);
+
+        }
+        function showMsgChange(msg) {
+            $('#messageCellChange').html(msg);
+
+        }
+        $(document).ready(function () {
+
+
+            $('#CheckAll').change(function () {
+                if ($(this).attr('checked'))
+                    $('.grid td input[type="checkbox"]').attr('checked', 'checked');
+                else $('.grid td input[type="checkbox"]').removeAttr('checked');
+            });
+
+            $('.grid input[type="checkbox"]').attr('checked', 'checked');
+
+
+            $('#tag-tbl input[type="submit"]').click(function () {
+                var itemsPlain = '';
+
+                var items = $('.grid td input[type="checkbox"]').filter(':checked');
+                if (!items.length) {
+                    showMsg("Необходимо выбрать книги в списке.");
+                    return false;
+                }
+
+                if (!$('#Margin').val().length)
+                    showMsg("Необходимо указать наценку.");
+
+                items.each(function () {
+                    itemsPlain += $(this).attr('arg') + ';';
+                });
+
+                $.post(saveLink, { items: itemsPlain, margin: $('#Margin').val() }, function (data) {
+                    showMsg(data);
+                    setTimeout(function() {
+                        document.location.href = document.location.href;
+                    }, 500);
+                });
+
+                return false;
+            });
+
+            $('#change-tbl input[type="submit"]').click(function () {
+                var itemsPlain = '';
+
+                var items = $('.grid td input[type="checkbox"]').filter(':checked');
+                if (!items.length) {
+                    showMsgChange("Необходимо выбрать книги в списке.");
+                    return false;
+                }
+
+                if (!$('#Override').val().length)
+                    showMsgChange("Необходимо указать цену.");
+
+                items.each(function () {
+                    itemsPlain += $(this).attr('arg') + ';';
+                });
+
+                $.post(overrideLink, { items: itemsPlain, override: $('#Override').val(), type: $('#ValueType').val(), target: $('#ConcurentList').val() }, function (data) {
+                    showMsgChange(data);
+                    setTimeout(function() {
+                        document.location.href = document.location.href;
+                    }, 500);
+                });
+
+                return false;
+            });
+
+        });
+
+    </script>
+}

@@ -1,0 +1,15 @@
+﻿@{
+    ViewBag.Title = "Редактирование списка товаров на главной странице";
+    Layout = "~/Views/Shared/_Master.cshtml";
+}
+<h2>
+    Редактирование списка товаров на главной странице</h2>
+<br />
+<div class="backref">
+    @Html.ActionLink("Верхний блок", "EditTabs", new { tab = 1 })
+    <br />
+    @Html.ActionLink("Спецпредложения", "EditTabs", new { tab = 2 })
+    <br />
+    @Html.ActionLink("Нижний блок", "EditTabs", new { tab = 3 })
+    <br />
+</div>

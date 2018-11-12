@@ -1,0 +1,41 @@
+﻿@model AuthForm    
+<div id="register-modal-content" style="@(IsPost ? "" : "display: none;")">
+ 
+    <div id="Register">
+           <div class="modal_column">
+                    <h4>Регистрация на сайте</h4>
+            <p>Для оформления заказов и доступа в личный кабинет вам неоходимо зарегистрироваться в системе</p>
+
+        @if (Model.IsSent)
+        {
+            <script type="text/javascript">
+                var url = '@(Model.ResultMessage)';
+                $(document).ready(function () {
+                    $.modal.close();
+                    document.location.href = url;
+                });
+            </script>
+        }
+        else
+        {
+
+            using (Ajax.BeginForm("Register", "Forms", Request.ToRouteValues(), new AjaxOptions() { HttpMethod = "POST", InsertionMode = InsertionMode.Replace, UpdateTargetId = "Register" }))
+            {
+                @Html.ValidationSummary(true)
+                <label for="Email">@Html.DisplayNameFor(model => model.Email) @Html.EditorFor(model => model.Email)</label>
+                <label for="Password">@Html.DisplayNameFor(model => model.Password) @Html.PasswordFor(model => model.Password)</label>
+                @Html.HiddenFor(model=> model.RedirectPage)
+                <p>
+@*
+                    <span class="fl pass-lost">
+                        <a href="#">Забыли пароль?</a>
+                    </span>
+*@
+                    <input type="submit" value="Зарегистрироваться" id="auth-btn" />
+                </p>
+
+            }
+        }
+    </div>
+    </div>
+</div>

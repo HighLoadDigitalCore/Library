@@ -1,0 +1,144 @@
+﻿@model CMSPage
+@{
+    bool isOrdering = AccessHelper.CurrentPageInfo.IsProfilePage;
+}
+<div class="sidebar" id="sideLeft">
+    <div class="@(isOrdering ? "sb_top2" : "sb_top")">
+
+        @if (!AccessHelper.IsAuthClient)
+        {
+            <div class="reg pig">
+                <a href="#">Регистрируйтесь</a>
+                <p>
+                    и начинайте копить бонусы и скидки
+                </p>
+            </div>
+        }
+        else
+        {
+            <p>
+                <br />
+                <br />
+            </p>
+        }
+
+        @if (!isOrdering)
+        {
+            @Html.Action("CountersBlock")
+        }
+    </div>
+    @if (!isOrdering)
+    {
+        
+        <div class="sb_menu">
+            <div id="menu">
+                <ul class="mega-menu">
+                    @if (CMSPage.FullPageTable.Any(x => x.URL == "toys"))
+                    {
+                        <li class="line1"><a href="/catalog/toys" class="a">Детские игрушки</a>
+                            <ul>
+                                <li>
+                                    <div class="column1">
+                                        <h3>Детские игрушки</h3>
+                                        @foreach (var page in CMSPage.FullPageTable.First(x => x.URL == "toys").GetHalfOfChildren(true, 19))
+                                        {
+                                            <a href="/@page.FullUrl" class="point">@page.PageName</a>
+                                        }
+                                    </div>
+                                    <div class="column1">
+                                        <h3></h3>
+                                        @foreach (var page in CMSPage.FullPageTable.First(x => x.URL == "toys").GetHalfOfChildren(false, 19))
+                                        {
+                                            <a href="/@page.FullUrl" class="point">@page.PageName</a>
+                                        }
+                                        <a href="/catalog/toys" class="all">Все детские игрушки</a>
+                                    </div>
+                                </li>
+                            </ul>
+                        </li>
+                    }
+                    @if (CMSPage.FullPageTable.Any(x => x.URL == "stationery"))
+                    {
+                        <li class="line2"><a href="/catalog/stationery" class="a">Канцелярские товары</a>
+                            <ul>
+                                <li>
+                                    <div class="column1">
+                                        <h3>Канцелярские товары</h3>
+                                        @foreach (var page in CMSPage.FullPageTable.First(x => x.URL == "stationery").GetHalfOfChildren(true, 19))
+                                        {
+                                            <a href="/@page.FullUrl" class="point">@page.PageName</a>
+                                        }
+                                    </div>
+                                    <div class="column1">
+                                        <h3></h3>
+                                        @foreach (var page in CMSPage.FullPageTable.First(x => x.URL == "stationery").GetHalfOfChildren(false, 19))
+                                        {
+                                            <a href="/@page.FullUrl" class="point">@page.PageName</a>
+                                        }
+                                        <a href="/catalog/toys" class="all">Все канцелярские товары</a>
+                                    </div>
+                                </li>
+                            </ul>
+                        </li>
+                    }
+@* <li class="line2"><a href="#">Спортивные товары</a>
+                    <ul>
+                        <li>
+                            <div class="column1">
+                                <h3>
+                                    Спортивные товары</h3>
+                                <a href="#" class="point">Активный отдых</a> <a href="#" class="point">Летний инвентарь</a>
+                                <a href="#" class="point">Обувь</a> <a href="#" class="point">Одежда</a> <a href="#"
+                                    class="point">Товары для детей</a>
+                            </div>
+                            <div class="column1">
+                                <h3>
+                                </h3>
+                                <a href="#" class="point">Тренажеры</a> <a href="#" class="point">Туризм. Отдых на воде</a>
+                                <a href="#" class="point">Зимний инвентарь</a> <a href="#" class="point">Другие товары</a>
+                                <a href="#" class="all">Все детские игрушки</a>
+                            </div>
+                        </li>
+                    </ul>
+                </li>
+                <li class="line3"><a href="#">Программное обеспечение</a></li>*@
+                </ul>
+            </div>
+        </div>
+        <div class="books">
+            <h2>Книги</h2>
+            <ul class="books_one">
+                <li><a href="/catalog?view=novelty">Новинки</a></li>
+                <li><a href="/catalog?view=bestseller">Бестселлеры</a></li>
+                @*
+                <li><a href="/catalog?view=best">Лучшие</a></li>
+*@
+                <li><a href="/catalog/ondemand">Печать по требованию</a></li>
+            </ul>
+            <ul class="books_two">
+                @foreach (var child in Model.Children.Where(x => x.Visible && x.URL != "ondemand" && x.URL != "toys" && x.URL != "stationery").OrderBy(x => x.OrderNum))
+                {
+                    <li>
+                        <a href="@child.FullUrl">@child.PageName</a>
+                    </li>
+                }
+            </ul>
+        </div>
+
+@*    <div class="paymant">
+        <h3>Принимаем к оплате:</h3>
+        <div class="pay">
+            <a href="#" class="plink1" title="Visa"></a><a href="#" class="plink2" title="MasterCard"></a><a href="#" class="plink3" title="Сбербанк России"></a><a href="#" class="plink4"
+                title="Яndex деньги"></a><a href="#" class="plink5" title="Webmoney"></a><a href="#"
+                    class="plink6" title="Contact"></a>
+        </div>
+    </div>
+    <a href="#" class="banner1">
+        <img src="/Content/client/i/banner1.png" /></a>
+    <br />
+    <a href="#" class="banner1">
+        <img src="/Content/client/i/banner3.png" /></a>
+    <div class="social_modul">
+    </div>*@
+    }
+</div>

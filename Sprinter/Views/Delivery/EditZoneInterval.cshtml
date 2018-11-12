@@ -1,0 +1,72 @@
+﻿@{
+    ViewBag.Title = "Редактирование интервала";
+    Layout = "~/Views/Shared/_Master.cshtml";
+}
+@model OrderDeliveryZoneInterval
+<h2>Редактирование интервала</h2>
+@using (Html.BeginForm())
+{
+    @Html.ValidationSummary(true)
+
+    <fieldset>
+        @Html.HiddenFor(model => model.ID)
+
+        <div class="editor-label">
+            @Html.LabelFor(model => model.MinInterval)
+        </div>
+        <div class="editor-field">
+            @Html.EditorFor(model => model.MinInterval)
+            @Html.ValidationMessageFor(model => model.MinInterval)
+        </div>
+
+        <div class="editor-label">
+            @Html.LabelFor(model => model.MaxInterval)
+        </div>
+        <div class="editor-field">
+            @Html.EditorFor(model => model.MaxInterval)
+            @Html.ValidationMessageFor(model => model.MaxInterval)
+        </div>
+
+        <div class="editor-label">
+            @Html.LabelFor(model => model.Cost)
+        </div>
+        <div class="editor-field">
+            @Html.EditorFor(model => model.Cost)
+            @Html.ValidationMessageFor(model => model.Cost)
+        </div>
+
+        <div class="editor-label">
+            @Html.LabelFor(model => model.WeightLimit)
+        </div>
+        <div class="editor-field">
+            @Html.EditorFor(model => model.WeightLimit)
+            @Html.ValidationMessageFor(model => model.WeightLimit)
+        </div>
+        <div class="editor-label">
+            @Html.LabelFor(model => model.OverWeightCost)
+        </div>
+        <div class="editor-field">
+            @Html.EditorFor(model => model.OverWeightCost)
+            @Html.ValidationMessageFor(model => model.OverWeightCost)
+        </div>
+        <div class="editor-label">
+            @Html.LabelFor(model => model.OverWeightUnit)
+        </div>
+        <div class="editor-field">
+            @Html.EditorFor(model => model.OverWeightUnit)
+            @Html.ValidationMessageFor(model => model.OverWeightUnit)
+        </div>
+
+        <p>
+            <input type="submit" value="Сохранить" />
+        </p>
+    </fieldset>
+}
+
+<div class="backref">
+    @Html.ActionLinkQuery("Назад к списку", "ZoneIntervalsList", "Delivery", new[] { "zid" })
+</div>
+
+@section scripts {
+    @Scripts.Render("~/bundles/jqueryval")
+}

@@ -1,0 +1,41 @@
+﻿@model HeaderViewModel
+<div class="footer_item">
+    <p>
+        Принимаем к оплате</p>
+    <div class="footer_pay">
+        <a href="#" class="fpay1" title="Visa"></a><a href="#" class="fpay2" title="MasterCard">
+        </a><a href="#" class="fpay3" title="Webmoney"></a><a href="#" class="fpay4" title="Яndex деньги">
+        </a><a href="#" class="fpay5" title="ROBO"></a>
+    </div>
+    <ul>
+        <li><a href="#">Оплата наличными</a></li>
+        <li><a href="#">Оплата почтовым переводом</a></li>
+        <li><a href="#">Безналичный расчет</a></li>
+    </ul>
+</div>
+<div class="footer_item">
+    <p class="grid">
+        Каталог товаров</p>
+    <ul>
+        <li><a href="#">Книги</a></li>
+        <li><a href="#">Учебники</a></li>
+        <li><a href="#">Товары для детей</a></li>
+        <li><a href="#">Спортивные товары</a></li>
+        <li><a href="#">Программное обеспечение</a></li>
+    </ul>
+</div>
+<div class="footer_item">
+    <p class="grid">
+        Карта сайта</p>
+    <ul>
+        @foreach (var page in Model.MainMenu)
+        {
+            <li><a href="@page.FullUrl">@page.PageName</a></li>
+        }
+    </ul>
+</div>
+<div class="footer_item">
+    <p class="grid">
+        © ООО «СПРИНТЕР», 2006-@DateTime.Now.Year</p>
+    @Html.Raw(Model.FooterPhones)
+</div>

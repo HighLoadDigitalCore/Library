@@ -1,0 +1,19 @@
+﻿@model OrderSteps
+
+<div class="steps">
+    <ul>
+        @foreach (var item in Model)
+        {
+            <li class="@item.CSS">
+                @if (item.IsStepAvailable && OrderSteps.CurrentStep != item.Arg)
+                {
+                    <a href="@item.Url">@item.Name</a>
+                }
+                else
+                {
+                    @item.Name
+                }
+            </li>
+        }
+    </ul>
+</div>

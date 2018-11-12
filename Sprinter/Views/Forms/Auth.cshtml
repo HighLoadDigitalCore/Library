@@ -1,0 +1,39 @@
+﻿@model AuthForm    
+<div id="auth-modal-content" style="@(IsPost ? "" : "display: none;")">
+ 
+    <div id="Auth">
+           <div class="modal_column">
+                    <h4>Авторизация</h4>
+            <p>Для доступа в личный кабинет вам неоходимо авторизоваться в системе</p>
+
+        @if (Model.IsSent)
+        {
+            <script type="text/javascript">
+                var url = '@(Model.ResultMessage)';
+                $(document).ready(function () {
+                    $.modal.close();
+                    document.location.href = url;
+                });
+            </script>
+        }
+        else
+        {
+                
+            using (Ajax.BeginForm("Auth", "Forms", Request.ToRouteValues(), new AjaxOptions() { HttpMethod = "POST", InsertionMode = InsertionMode.Replace, UpdateTargetId = "Auth"}))
+            {
+                @Html.ValidationSummary(true)
+                <label for="Email">@Html.DisplayNameFor(model => model.Email) @Html.EditorFor(model => model.Email)</label>
+                <label for="Password">@Html.DisplayNameFor(model => model.Password) @Html.PasswordFor(model => model.Password)</label>
+                @Html.HiddenFor(model=> model.RedirectPage, new{@class = "auth-redirect"})
+                <p>
+                    <span class="fl pass-lost">
+                        <a href="#">Забыли пароль?</a>
+                    </span>
+                    <input type="submit" value="Авторизоваться" id="auth-btn" />
+                </p>
+
+            }
+        }
+    </div>
+    </div>
+</div>

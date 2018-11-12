@@ -1,0 +1,131 @@
+﻿@model IEnumerable<OrderDeliveryGroup>
+@{
+    var cart = ShopCart.InitCart();
+}
+<div class="content-block">
+
+    <table class="delivery">
+        <tr>
+            <td colspan="3"><b>
+                <span id="messageCell" style="color: orangered"></span>
+            </b></td>
+        </tr>
+
+        @foreach (var group in Model)
+        {
+            <tr>
+                <td style="width: 220px">
+                    <label>
+                        @Html.RadioButton("DeliveryGroup", group.ID, cart.GetField<int>("DeliveryGroup") == group.ID)
+                        <span class="city">@group.GroupName</span>
+                    </label>
+                </td>
+                <td><span><strong>Способы доставки:</strong>
+                    <span>@Html.Raw(string.Join(",&nbsp;</span><span>", group.OrderDeliveryProviders.OrderBy(x => x.OrderNum).Select(x => "{0}".FormatWith(x.Name))))</span>
+                </span></td>
+                <td></td>
+            </tr>
+        }
+    </table>
+    @if (cart.SelectedGroup.ID > 0)
+    {
+        <h3 class="d-moscow">@cart.SelectedGroup.GroupName</h3>
+        
+        <table class="delivery-moscow">
+            @if (cart.SelectedProvider.ID > 0)
+            {
+                if (cart.SelectedProvider.ID == 1)
+                {
+                <tr>
+                    <td colspan="3">
+                        <b>Внимание! Бесплатно вы можете получить свой заказ только в случае оформления его на выдачу по адресу: пер. Столярный, д. 14, 2 подъезд</b>
+                    </td>
+                </tr>
+                }
+                
+                <tr>
+                    @if (cart.SelectedProvider.OrderDeliveryRegions.Count == 1)
+                    {
+                        <td colspan="3"><b>@cart.SelectedProvider.OrderDeliveryRegions.First().Name</b>
+                            <div style="display: none">@Html.DropDownList("DeliveryRegion", cart.SelectedProvider.RegionList)</div>
+                        </td>    
+                    }
+                    else
+                    {
+                        <td><span class="world">Выберите @cart.SelectedProvider.SelectListText из списка</span></td>
+                        <td>@Html.DropDownList("DeliveryRegion", cart.SelectedProvider.RegionList)</td>
+                        <td>
+                            @if (!cart.SelectedProvider.ShowOrgData)
+                            {
+                                <a target="_blank" href="/order/foreindelivery">Правила доставки за пределы России</a>
+                            }
+                        </td>
+                    }
+                </tr>
+            }
+            @foreach (var provider in cart.SelectedGroup.OrderDeliveryProviders.Where(x => x.OrderDeliveryRegions.Any()).OrderBy(x => x.OrderNum))
+            {
+                <tr>
+                    <td width="300px">
+                        <label>
+                            @Html.RadioButton("DeliveryProvider", provider.ID, cart.GetField<int>("DeliveryProvider") == provider.ID)
+                            <span class="deliv">@provider.Name</span>
+                        </label>
+                    </td>
+
+                    @if ((cart.SelectedRegion.ID == 0 && cart.SelectedProvider.OrderDeliveryRegions.Count > 1) || cart.SelectedProvider.ID != provider.ID)
+                    {
+                        <td>
+                            @if (!provider.DeliveryAverage.IsNullOrEmpty())
+                            {
+                               
+                                <span class="day">@provider.DeliveryAverage</span>
+                            }
+                        </td>
+                        <td class="price">@(provider.HasPriceRange ? "от " : "")
+                            <span>@provider.MinPrice.ForDisplaing()</span> руб</td>
+                    }
+                    else
+                    {
+                        <td>
+                            @if (!cart.SelectedRegion.Delivery.IsNullOrEmpty())
+                            {
+                                <span class="day">@cart.SelectedRegion.Delivery</span>
+                            }
+                        </td>
+                        <td class="price">
+                            <b>
+                                <span>@cart.SelectedRegion.OrderDeliveryCost.ForDisplaing()</span> руб
+                            </b>
+
+                        </td>
+                    }
+                </tr>
+                    if (cart.SelectedProvider.DiscountThreshold.IsFilled() && provider.ID == cart.SelectedProvider.ID)
+                    {
+                <tr>
+                    <td colspan="3">
+                        <b style="color: #438715">Спецпредложение! При покупке на сумму свыше @cart.SelectedProvider.DiscountThreshold.Value.ToHtml() рублей доставка бесплатна!<br/>
+                        </b>
+                        @if (cart.TotalSum <= cart.SelectedProvider.DiscountThreshold.Value)
+                        {
+                            <b>Для бесплатной доставки вам необходимо купить товаров еще на @((cart.SelectedProvider.DiscountThreshold.Value - cart.TotalSum).ToString("f2")) рублей</b>
+                        }
+                        else
+                        {
+                            <b>Вы выбрали товаров на сумму @cart.TotalSum.ToString("f2") рублей. Доставка будет произведена бесплатно.</b>
+                        }
+                        <br />
+                        <br />
+                    </td>
+                </tr>
+                    }
+
+            }
+        </table>
+    }
+</div>
+<div class="tab-bottom bsk">
+    <a class="left" href="/order?step=1">Вернуться</a>
+    <a class="right" href="/order?step=3" rel="auto-save" message="Необходимо выбрать способ доставки" arg="check" fields="DeliveryGroup;DeliveryProvider;DeliveryRegion">Продолжить</a>
+</div>

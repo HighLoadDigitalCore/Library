@@ -1,0 +1,27 @@
+﻿@{
+    ViewBag.Title = "Список тарифных планов";
+    Layout = "~/Views/Shared/_Master.cshtml";
+}
+@model IEnumerable<OrderDeliveryZone>
+<h2>Список тарифных планов</h2>
+<fieldset>
+    <table class="grid" style="width: 100%">
+        <tr>
+            <th>Название</th>
+            <th></th>
+            <th></th>
+        </tr>
+        @foreach (var zone in Model)
+        {
+            <tr>
+                <td>@Html.ActionLink(zone.Name, "EditZone", "Delivery", new { ID = zone.ID }, null)</td>
+                <td>@Html.ActionLink("список цен", "ZoneIntervalsList", "Delivery", new { zid = zone.ID }, null)</td>
+                <td>@Html.ActionLink("удалить", "DeleteZone", "Delivery", new { ID = zone.ID }, null)</td>
+            </tr>
+        }
+    </table>
+
+</fieldset>
+<div class="backref">
+    @Html.ActionLink("Добавить тарифный план", "EditZone", "Delivery", new{ID = 0}, null)
+</div>

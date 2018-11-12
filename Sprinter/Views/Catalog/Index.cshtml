@@ -1,0 +1,164 @@
+﻿@{
+    ViewBag.Title = "Управление каталогом";
+    Layout = "~/Views/Shared/_Master.cshtml";
+}
+@model MasterSearchViewModel
+@{
+    var sectionModel = Model.AdditionalFilterModel as CatalogDistributionFilter;
+}
+<h2>Управление каталогом</h2>
+
+@Html.Partial("CatalogSearchForm", Model.SearchData)
+@using (Html.BeginForm("Index", "Catalog", Model.SearchData.CreateRoutes()))
+{
+    <fieldset>
+        <br />
+        <table style="width: 400px; float: left">
+            <tr>
+                <td>
+                    <b>Тип записей:</b>
+                </td>
+                <td>@Html.DropDownList("ViewMode", sectionModel.ViewModes, new { style = "width:100%" })
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    <b>@(sectionModel.ViewMode == 1 ? "Раздел из описания:" : "Назначенный раздел:")</b>
+                </td>
+                <td>
+                    @Html.DropDownList("SectionPath", sectionModel.Sections, new { style = "width:100%" })
+                </td>
+            </tr>
+            <tr>
+                <td colspan="2">
+                    <hr />
+                </td>
+            </tr>
+            <tr>
+                <td colspan="2">
+                    <input type="submit" arg="move" style="margin-left: 0; width: 320px" class="tree-submit" value="Переместить выбранные записи в раздел -->>>" />
+                </td>
+            </tr>
+            <tr>
+                <td colspan="2">
+                    <input type="submit" arg="delete" style="margin-left: 0; width: 320px" class="tree-submit" value="Пометить неактивными или удалить записи" />
+                </td>
+            </tr>
+            <tr>
+                <td colspan="2">
+                    <div class="backref" style="margin-left: 0">
+                        @Html.ActionLink("Перейти к редактирования разделов", "Index", "Pages")
+                    </div>
+
+                </td>
+            </tr>
+        </table>
+        <div class="catalog-tree">
+            <div id="tree">
+            </div>
+        </div>
+        
+    </fieldset>
+    <div class="backref" style="margin-left: 10px; font-weight: bold; color: orangered">Внимание! В поиске участвуют только товары от активных постащиков.</div>
+}
+@Html.Partial("CatalogCommonList", Model)
+@section scripts
+{
+    <script type="text/javascript">
+        var dataLink = '@Url.Action("GetTreeData", "Catalog")';
+        var saveLink = '@Url.Action("SaveData", "Catalog")';
+        var deleLink = '@Url.Action("DeleteData", "Catalog")';
+        $(document).ready(function () {
+
+
+            $('.common-grid tr:odd').addClass('odd');
+
+
+            $('fieldset select').change(function () {
+                document.forms[1].submit();
+            });
+
+
+
+            $('#CheckAll').change(function () {
+                if ($(this).attr('checked'))
+                    $('.grid td input[type="checkbox"]').attr('checked', 'checked');
+                else $('.grid td input[type="checkbox"]').removeAttr('checked');
+            });
+
+            $('.grid input[type="checkbox"]').attr('checked', 'checked');
+            loadTree();
+
+            $('.tree-submit').click(function () {
+                var sections = $('#tree').jstree("get_checked", null, true);
+
+                var sectionPlain = '';
+                var itemsPlain = '';
+
+                if (!sections.length && $(this).attr('arg') == 'move') {
+                    alert("Необходимо выбрать раздел(ы) каталога.");
+                    return false;
+                }
+                var items = $('.grid td input[type="checkbox"]').filter(':checked');
+                if (!items.length ) {
+                    alert("Необходимо выбрать книги в списке.");
+                    return false;
+                }
+
+
+                sections.each(function () {
+                    sectionPlain += $(this).attr('id').replace('x', '') + ";";
+                });
+
+                items.each(function () {
+                    itemsPlain += $(this).attr('arg') + ';';
+                });
+
+                if ($(this).attr('arg') == 'move') {
+                    $.post(saveLink, { sections: sectionPlain, items: itemsPlain }, function (data) {
+                        document.location.href = document.location.href;
+                    });
+                } else {
+                    $.post(deleLink, { items: itemsPlain }, function (data) {
+                        document.location.href = document.location.href;
+                    });
+                }
+                return false;
+            });
+
+        });
+
+
+        function loadTree() {
+            $.getJSON(dataLink, {}, function (res) {
+
+
+                $('#tree').jstree({
+                    "plugins": [
+                        "themes", "json_data", "ui", "cookies", "dnd", "search", "types", "checkbox"
+                    ],
+
+                    "cookies": {
+                        "save_opened": "js_tree_catalog",
+                        "cookie_options": { expires: 365 }
+                    },
+
+                    "checkbox": {
+                        "two_state": true
+                    },
+
+                    "themes": {
+                        "theme": "apple",
+                        "url": "/Content/themes/apple/style.css"
+                    },
+
+                    "json_data": {
+                        "data": res,
+                        "progressive_render": true
+                    }
+                });
+
+            });
+        }
+    </script>
+}

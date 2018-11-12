@@ -1,0 +1,46 @@
+﻿@model IEnumerable<BookSpecOffer>                   
+
+<div class="in-tab">
+    @foreach(var item in Model)
+    {
+        <div class="book-line">
+
+            <a href="@item.BookSaleCatalog.URL">
+                <img src="@item.BookSaleCatalog.ThumbURL" width="118" height="171"></a>
+            <div class="bl-info bl-info-cart">
+                <div class="in-bl-info">
+                    <h2 class="spec-head">@Html.Raw(item.BookSaleCatalog.BookDescriptionCatalog.Header)<span class="price"><strong style="text-decoration: line-through">@item.BookSaleCatalog.PriceForClient</strong>&nbsp;&nbsp;<strong style="text-decoration: none">@item.SpecPrice</strong> руб</span>
+                        <br>
+                        <b class="code">Код товара: @item.BookSaleCatalog.SprinterCode</b>
+                    </h2>
+                   
+                    <span class="name">
+                        @item.BookSaleCatalog.BookDescriptionCatalog.AuthorsByComma
+                    </span>
+                     <div class="spec-text">
+                        <label class="mt">Спецпредложение! Купите эту книгу всего за<span class="price"><strong>@((item.SpecPrice).ForDisplaing())</strong></span>рублей при покупке товара на сумму более @item.MinPrice.ForDisplaing() рублей</label>
+                    </div>
+                    <a class="basket_db basket_db_right" href="#" spec="1" rel="to-cart" arg="@item.SaleCatalogID">
+                        @if (ShopCart.InitCart().ActiveBooks.Any(x => x.BookSaleCatalog.ID == item.SaleCatalogID && x.IsSpec))
+                            {
+                            <span class="already-in">Уже в корзине</span>
+                            }</a>
+                    <div class="number_db">
+                        <label>
+                            Количество:
+                                <input type="number" value="1" id="count">
+                            шт.</label>
+                    </div>
+                    @*<span class="date">Дата отправки: @DateTime.Now.AddDays(1).ToString("dd.MM.yyyy")</span>*@
+                    <div class="links">
+                        @*
+                        <a class="link-green" href="#" arg="@item.ID" action="delay">@(item.IsDelayed?"В корзину":"Отложить на потом")</a>
+*@
+
+                    </div>
+                </div>
+            </div>
+        </div>
+    }
+
+</div>

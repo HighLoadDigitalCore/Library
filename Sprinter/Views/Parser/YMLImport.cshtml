@@ -1,0 +1,96 @@
+﻿@{
+    ViewBag.Title = "Импорт каталога цен";
+    Layout = "~/Views/Shared/_Master.cshtml";
+}
+@model IEnumerable<BookDescriptionProvider>
+@{ var parseringInfo = ParseringInfo.Create("YML"); }
+<h2>
+    Обновление каталога цен</h2>
+<fieldset>
+    <table style="text-align: left">
+        <tr>
+            <th style="width: 300px">
+                Название
+            </th>
+            <th>
+                Последнее обновление
+            </th>
+            <th>
+            </th>
+        </tr>
+        <tr>
+            <td colspan="3">
+                <hr />
+            </td>
+        </tr>
+        @foreach (var provider in Model)
+        {
+            <tr>
+                <td>@provider.ProviderName
+                </td>
+                <td>@(provider.LastUpdateDate.HasValue ? provider.LastUpdateDate.Value.ToString("dd MMM yyyy, HH:mm") : "-")
+                </td>
+                <td>
+                    @if (!parseringInfo.StartDate.HasValue || parseringInfo.EndDate.HasValue)
+                    {
+                        <a arg="@provider.ID" href="#" class="start">Запустить обновление</a>
+                    }
+                </td>
+            </tr>
+        }
+    </table>
+    <br />
+    <br />
+    <div style="display: none" class="message-cell">
+        @*
+        <div class="dirs">
+            Обработано&nbsp;<b></b>&nbsp;страниц каталога</div>
+*@
+        <div class="created">
+            Создано&nbsp;<b></b>&nbsp;записей</div>
+        <div class="updated">
+            Обновлено&nbsp;<b></b>&nbsp;записей</div>
+        <div class="errors">
+            Пропущено из-за ошибок&nbsp;<b></b>&nbsp;записей</div>
+        <br />
+        <div class="message-box">
+        </div>
+    </div>
+</fieldset>
+@section scripts
+{
+    <script type="text/javascript">
+        var refreshURL = '@Url.Action("loadInfo", "Parser")';
+        var startURL = '@Url.Action("startYMLAsync", "Parser")';
+        var stopURL = '@Url.Action("stopYMLAsync", "Parser")';
+
+        $().ready(function () {
+            $('.start').click(function () {
+                $.post(startURL, { arg: $(this).attr('arg') }, function (data) {
+                    window.location.reload();
+                });
+            });
+            loadInfo();
+        });
+
+        function loadInfo() {
+            $.get(refreshURL, { name: 'YML' }, function (data) {
+                if (!data.StartDate)
+                    return;
+                $('.message-cell').show();
+                $('.message-box').html(data.MessageList);
+                $('.dirs b').html(data.Dirs);
+                $('.created b').html(data.Created);
+                $('.updated b').html(data.Updated);
+                $('.errors b').html(data.Errors);
+
+                if (!data.EndDate)
+                    setTimeout('loadInfo();', 2000);
+                else if (!$('.start').length) {
+                    window.location.reload();
+                }
+            });
+
+        }
+    </script>
+}

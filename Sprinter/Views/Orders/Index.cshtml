@@ -1,0 +1,49 @@
+﻿@{
+    ViewBag.Title = "Управление заказами";
+    Layout = "~/Views/Shared/_Master.cshtml";
+}
+@model PagedData<Order>
+<h2>Список заказов</h2>
+
+@using (Html.BeginForm())
+{
+    <fieldset>
+        <table style="width: 100%">
+            <tr>
+                <td><b>EMail, Фамилия, Имя пользователя(или их часть):</b></td>
+                <td>@Html.TextBox("query")</td>
+            </tr>
+            <tr>
+                <td colspan="2">
+                    <input type="submit" value="Найти" />
+                </td>
+            </tr>
+        </table>
+    </fieldset>
+}
+
+<br />
+<br />
+<fieldset>
+    <table class="grid" style="width: 100%">
+        <tr>
+            <th>Номер</th>
+            <th>ФИО покупателя</th>
+            <th>Дата заказа</th>
+            <th>Сумма заказа</th>
+            <th></th>
+        </tr>
+        @foreach (var order in Model)
+        {
+            <tr>
+                <td>@Html.ActionLinkQuery(order.OrderNumber, "Edit", "Orders", new[] { "page", "query" }, new { order = order.ID })</td>
+                <td>@Html.ActionLink(order.User.Profile.FullName, "Edit", "Users", new { user = order.User.UserId }, null) @(order.User.Profile.Email == AccessHelper.NoMail ? "" : string.Format("({0})", order.User.Profile.Email))</td>
+                <td>@(order.CreateDate.ToString("dd MMMMM yyyy, HH:mm"))</td>
+                <td>@order.TotalSum.ForDisplaing()</td>
+                <td>@Html.ActionLinkQuery("удалить", "Delete", "Orders", new[] { "page", "query" }, new { order = order.ID })</td>
+            </tr>
+        }
+    </table>
+    <br />
+    @Html.Raw(Model.PagerMenu(Html))
+</fieldset>

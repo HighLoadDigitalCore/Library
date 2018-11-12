@@ -1,0 +1,192 @@
+﻿@{
+    ViewBag.Title = "Создание и редактирование фильтров";
+    Layout = "~/Views/Shared/_Master.cshtml";
+}
+@model CMSPage
+<h2>
+    Создание и редактирование фильтров
+</h2>
+<fieldset>
+    <b>Выберите раздел каталога:</b>
+    <div class="tree-scroller">
+        <div id="tree">
+        </div>
+    </div>
+    <br />
+    @if (Model != null)
+    {
+        <h2>
+            Фильтры для раздела "@Model.PageName"</h2>
+        <br />
+        <b>Фильтр по параметрам:</b>
+        if (@Model.TagComplexFilters.Any())
+        {
+        <span>
+            @Html.ActionLink("Редактировать", "ComplexFilterEdit", "Catalog", new { ID = Model.TagComplexFilters.First().ID, page = Model.ID }, null)
+        </span>
+        <table>
+            <tr>
+                <td>
+                    Название фильтра:
+                </td>
+                <td>
+                    @Model.TagComplexFilters.First().Name
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    Статус:
+                </td>
+                <td>
+                    @Model.TagComplexFilters.First().Visible.ToShowStatus()
+                </td>
+            </tr>
+            @if (@Model.TagComplexFilters.First().TagComplexFilterLists.Any())
+            {
+                <tr>
+                    <td colspan="2">
+                        <table class="grid">
+                            <tr>
+                                <th>
+                                    Название списка
+                                </th>
+                                <th>
+                                    Текст по умолчанию
+                                </th>
+                                <th>
+                                    Список тегов
+                                </th>
+                            </tr>
+                            @foreach (var list in Model.TagComplexFilters.First().TagComplexFilterLists)
+                            {
+                                <tr>
+                                    <td>
+                                        @list.ItemHeader
+                                    </td>
+                                    <td>
+                                        @list.DefaultValue
+                                    </td>
+                                    <td>
+                                        @list.TagList
+                                    </td>
+                                </tr>
+                            }
+                        </table>
+                    </td>
+                </tr>
+            }
+        </table>
+        }
+        else
+        {
+        <span>
+            @Html.ActionLink("Создать новый", "ComplexFilterEdit", "Catalog", new { ID = "0", page = Model.ID }, null)
+            &nbsp;
+            @Html.ActionLink("Создать копию", "ComplexFilterEdit", "Catalog", new { ID = "-1", page = Model.ID }, null)
+        </span>
+        }
+        
+        <br />
+        <br />
+        <br />
+        <b>Спринт поиск:</b>
+        
+        if (@Model.TagSimpleFilters.Any())
+        {
+        <span>
+            @Html.ActionLink("Редактировать", "SimpleFilterEdit", "Catalog", new { ID = Model.TagSimpleFilters.First().ID, page = Model.ID }, null)
+        </span>
+        <table>
+            <tr>
+                <td>
+                    Название фильтра:
+                </td>
+                <td>
+                    @Model.TagSimpleFilters.First().Name
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    Статус:
+                </td>
+                <td>
+                    @Model.TagSimpleFilters.First().Visible.ToShowStatus()
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    Список тегов:
+                </td>
+                <td>
+                    @Model.TagSimpleFilters.First().TagList
+                </td>
+            </tr>
+        </table>
+        }
+        else
+        {
+        <span>
+            @Html.ActionLink("Создать новый", "SimpleFilterEdit", "Catalog", new { ID = "0", page = Model.ID }, null)
+            &nbsp;
+            @Html.ActionLink("Создать копию", "SimpleFilterEdit", "Catalog", new { ID = "-1", page = Model.ID }, null)
+        </span>
+        }
+
+    }
+</fieldset>
+@section scripts
+{
+    <script type="text/javascript">
+        var dataLink = '@Url.Action("GetTreeData", "Catalog")';
+        var viewLink = '@Url.Action("FilterEdit", "Catalog", new { ID = "" })';
+        $(document).ready(function () {
+            loadTree();
+        });
+
+
+        function loadTree() {
+            $.getJSON(dataLink, {}, function (res) {
+                $('#tree').jstree({
+                    "plugins": [
+                        "themes", "json_data", "ui", "cookies", "dnd", "search", "types"
+                    ],
+
+                    "cookies": {
+                        "save_opened": "js_tree_catalog_filter",
+                        "cookie_options": { expires: 365 }
+                    },
+
+                    "themes": {
+                        "theme": "apple",
+                        "url": "/Content/themes/apple/style.css"
+                    },
+
+                    "json_data": {
+                        "data": res,
+                        "progressive_render": true
+                    }
+                }).bind("loaded.jstree", function (event, data) {
+                    $('#tree li a').each(function () {
+                        $(this).attr('href', viewLink + "?id=" + $(this).parents('li').attr('uid'));
+                    });
+                }).bind("open_node.jstree", function (e, data) {
+                    /*
+                    for (var i = 0; i < arguments.length; i++) {
+                    console.log(arguments[i]);
+                    }
+                    */
+                    $(data.rslt.obj).find('li a').each(function () {
+
+
+                        $(this).attr('href', viewLink + "/" + $(this).parents('li').attr('uid'));
+                        $(this).click(function () {
+                            document.location.href = $(this).attr('href');
+                        });
+
+                    });
+                });
+
+            });
+        }
+    </script>
+}

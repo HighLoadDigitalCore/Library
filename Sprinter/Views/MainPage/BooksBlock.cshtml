@@ -1,0 +1,20 @@
+﻿@model IEnumerable<BookSaleCatalog>
+<div class="books_sale">
+    <div class="bs_content">
+        @foreach (var book in Model)
+        {
+            
+            <div class="bs">
+                @if (book.CanBeSold)
+                {
+                    <a class="buyitnow" href="#" arg="@book.ID">Купить сразу</a>
+                }
+                <a class="bs_img" title="@Html.Raw(book.BookDescriptionCatalog.Header)" href="@book.URL">
+                    <img height="171" width="118" src="@book.ThumbURL"></a> <a title="@Html.Raw(book.BookDescriptionCatalog.Header)" class="bs_name" href="@book.URL">@Html.Raw(book.BookDescriptionCatalog.Header)</a>
+                @if (book.CanBeSold){
+                <span class="bs_price"><a  href="@book.URL">@book.PriceForClient</a> @(book.IsMaxOverPriced ? "" : "руб.")</span>
+                }
+            </div>
+        }
+    </div>
+</div>

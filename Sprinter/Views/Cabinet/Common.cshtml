@@ -1,0 +1,8 @@
+﻿@if (ViewBag.OrderNum == null || ((string)ViewBag.OrderNum).IsNullOrEmpty())
+{
+    <b>У вас нет ни одного заказа</b>
+}
+else
+{
+    @Html.Action("Details", new{id=ViewBag.OrderNum, header = ViewBag.Header})
+}

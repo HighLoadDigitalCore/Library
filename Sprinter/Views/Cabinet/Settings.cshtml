@@ -1,0 +1,36 @@
+﻿@model UserProfile
+<div class="in-tab">
+    <br />
+    <br />
+    @using (Html.BeginForm())
+    {
+        <h1>Настройки оповещений о изменении статуса заказа</h1>
+        <br/>
+        @Html.ValidationSummary(true)
+        <table  class="settings-tbl">
+            <tr>
+                <td><b>E-mail для оповещений:</b></td>
+                <td>@Html.TextBox("NotifyMail", Model.NotifyMail)</td>
+            </tr>
+            <tr>
+                <td><b>Отправлять оповещения по E-mail:</b></td>
+                <td>@Html.CheckBox("NeedMailNotify", Model.NeedMailNotify ?? false)</td>
+            </tr>
+            <tr>
+                <td><b>Телефон для оповещений:</b></td>
+                <td>@Html.TextBox("NotifyPhone", Model.NotifyPhone)</td>
+            </tr>
+            <tr>
+                <td><b>Отправлять оповещения по смс:</b></td>
+                <td>@Html.CheckBox("NeedPhoneNotify", Model.NeedPhoneNotify ?? false)</td>
+            </tr>
+        </table>
+        <br/>
+        <input type="submit" value="Сохранить"/>
+    }
+</div>
+<style>
+    .settings-tbl td{
+        padding: 5px 15px 5px 0;
+    }
+</style>

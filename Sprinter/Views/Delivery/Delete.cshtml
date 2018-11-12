@@ -1,0 +1,22 @@
+﻿@model OrderDeliveryRegion
+@{
+    ViewBag.Title = "Удаление региона";
+    Layout = "~/Views/Shared/_Master.cshtml";
+}
+
+<h2>Удаление региона</h2>
+
+
+<fieldset>
+    @using (Html.BeginForm())
+    {
+        <h3>Вы уверены, что хотите удалить регион @Model.Name?</h3>
+        <br />
+        <br />
+        <input type="submit" value="Удалить" />
+
+    }
+</fieldset>
+<div class="backref">
+    @Html.ActionLinkQuery("Назад к списку", "Regions", "Delivery", new[] { "pid" })
+</div>

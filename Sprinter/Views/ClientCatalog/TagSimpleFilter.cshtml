@@ -1,0 +1,15 @@
+﻿@using Sprinter.Extensions
+@model TagSimpleFilter
+@if (Model != null && Model.TagSimpleFilterItems.Any())
+{
+    <div class="sprint_search">
+        <h2>
+            Спринт поиск</h2>
+        <ul class="books_one">
+            @foreach (var tag in Model.TagSimpleFilterItems)
+            {
+                <li><a href="@(HttpContext.Current.Request.PageUrl() + "?tags=" + tag.TagID)">@tag.BookTag.Tag</a></li>    
+            }
+        </ul>
+    </div>
+}

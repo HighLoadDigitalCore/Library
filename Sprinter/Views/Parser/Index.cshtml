@@ -1,0 +1,14 @@
+﻿@{
+    ViewBag.Title = "Список парсеров сайтов";
+    Layout = "~/Views/Shared/_Master.cshtml";
+}
+<h2>
+    Список парсеров сайтов</h2>
+<br />
+<fieldset>
+    <br />
+    @Html.ActionLink("Парсер сайта Urait-book.ru", "Urait", "Parser")
+    <br />
+    @Html.ActionLink("Обновление каталога цен", "YMLImport", "Parser")
+    <br />
+</fieldset>

@@ -1,0 +1,54 @@
+﻿@model UserProfile
+<div id="UserProfile">
+    @using (Ajax.BeginForm("Personal", new AjaxOptions { HttpMethod = "POST", InsertionMode = InsertionMode.Replace, UpdateTargetId = "UserProfile" }))
+    {
+       
+        
+        <div class="personal-information">
+            <b id="messageCell" style="color: greenyellow">@Html.ValidationSummary(false)</b>
+            <div class="left-column">
+                <h3>Персональная информация</h3>
+                <label for="UserFirstName">Имя:@Html.TextBox("Name", Model.Name)</label>
+                <label for="UserSurname">Фамилия:@Html.TextBox("Surname", Model.Surname)</label>
+                <label for="UserSecName">Отчество:@Html.TextBox("Patrinomic", Model.Patrinomic)</label>
+                <label for="UserPhone">Телефон:@Html.TextBox("HomePhone", Model.HomePhone)</label>
+                <label for="UserMobile">Мобильный:@Html.TextBox("MobilePhone", Model.MobilePhone)</label>
+                <label></label>
+                <h3>Адрес доставки
+                </h3>
+                <label for="DeliveryIndex">Индекс:@Html.TextBox("ZipCode", Model.ZipCode)</label>
+                <label for="DeliveryIndex">Регион:@Html.TextBox("Region", Model.Region)</label>
+                <label for="DeliveryTown">Город:@Html.TextBox("Town", Model.Town)</label>
+                <label for="DeliveryStreet">Улица:@Html.TextBox("Street", Model.Street)</label>
+                <label for="DeliveryHouse">Дом:@Html.TextBox("House", Model.House)</label>
+                <label for="DeliveryFlat">Квартира/офис:@Html.TextBox("Flat", Model.Flat)</label>
+                <label for="DeliverySection">Корпус:@Html.TextBox("Building", Model.Building)</label>
+                <label for="DeliveryDoorway">Подъезд:@Html.TextBox("Doorway", Model.Doorway)</label>
+                <label for="DeliveryFloor">Этаж:@Html.TextBox("Floor", Model.Floor)</label>
+
+            </div>
+            <div class="right-column">
+
+                <div class="left-column">
+                    <h3>Информация для юридических лиц</h3>
+                    <label for="OrgName">Название:@Html.TextBox("OrgName", Model.OrgName)</label>
+                    <label for="OrgINN">ИНН:@Html.TextBox("OrgINN", Model.OrgINN)</label>
+                    <label for="OrgKPP">КПП:@Html.TextBox("OrgKPP", Model.OrgKPP)</label>
+                    <label for="OrgKS">К/с:@Html.TextBox("OrgKS", Model.OrgKS)</label>
+                    <label for="OrgRS">Р/с:@Html.TextBox("OrgRS", Model.OrgRS)</label>
+                    <label for="OrgBank">Банк:@Html.TextBox("OrgBank", Model.OrgBank)</label>
+                    <label for="OrgBik">БИК:@Html.TextBox("OrgBik", Model.OrgBik)</label>
+                    <label for="OrgJurAddr">Адрес юр.:@Html.TextBox("OrgJurAddr", Model.OrgJurAddr)</label>
+                    <label for="OrgFactAddr">Адрес факт.:@Html.TextBox("OrgFactAddr", Model.OrgFactAddr)</label>
+                    <label for="OrgDirector">Генеральный дир.:@Html.TextBox("OrgDirector", Model.OrgDirector)</label>
+                    <label for="OrgAccountant">Главный бух.:@Html.TextBox("OrgAccountant", Model.OrgAccountant)</label>
+                </div>
+
+
+            </div>
+        </div>
+        <div class="tab-bottom bsk">
+            <input type="submit" class="right r-submit" value="Сохранить" />
+        </div>
+    }
+</div>

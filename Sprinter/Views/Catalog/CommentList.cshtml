@@ -1,0 +1,95 @@
+﻿@model PagedData<BookComment>
+@{
+    ViewBag.Title = "Список отзывов для утверждения";
+    Layout = "~/Views/Shared/_Master.cshtml";
+}
+
+<h2>Список отзывов для утверждения</h2>
+<fieldset>
+    <table class="grid common-grid" style="width: 100%">
+        <tr>
+            <th style="width: 20px">
+                @Html.CheckBox("CheckAll", false)
+            </th>
+            <th style="width: 120px">
+                <b>Дата</b>
+
+            </th>
+            <th style="width: 100px">
+                <b>Автор</b>
+            </th>
+            <th style="width: 120px">
+                <b>E-mail
+                </b>
+            </th>
+            <th style="width: 200px">
+                <b>Книга</b>
+            </th>
+            <th>
+                <b>Отзыв</b>
+            </th>
+        </tr>
+        @foreach (var comment in Model)
+        {
+            <tr>
+                <td>@Html.CheckBox("Comment_" + comment.ID, false, new { arg = comment.ID })
+                </td>
+                <td>
+                    @comment.Date.ToString("d MMMMM yyyy, HH:mm")
+                </td>
+                <td>
+                    @if (comment.UserID.HasValue)
+                    {
+                        @Html.ActionLink(comment.UserName, "Edit", "Users", new { user = comment.UserID }, null)
+                    }
+                    else
+                    {
+                        @comment.UserMail
+                    }
+                </td>
+                <td>
+                    @comment.UserMail
+                </td>
+                <td>
+                    @Html.ActionLink(comment.BookDescriptionCatalog.Header, "Editor", "Catalog", new { id = comment.BookDescriptionCatalog.BookSaleCatalogs.First().ID, ReturnURL = Request.RawUrl }, null)
+                </td>
+                <td>
+                    @comment.Comment
+                </td>
+            </tr>
+        }
+    </table>
+    <hr />
+    @Model.PagerMenu(Html)
+    <br />
+    <input type="submit" value="Утвердить выделенные" arg="approve" />&nbsp;&nbsp;
+    <input type="submit" value="Удалить выделенные  " arg="delete" />&nbsp;&nbsp;
+</fieldset>
+@section scripts{
+    <script type="text/javascript">
+        var saveLink = '@Url.Action("SaveComments", "Catalog")';
+        $().ready(function () {
+            $('#CheckAll').change(function () {
+                if ($(this).attr('checked'))
+                    $('.grid td input[type="checkbox"]').attr('checked', 'checked');
+                else $('.grid td input[type="checkbox"]').removeAttr('checked');
+            });
+
+            $('fieldset input[type="submit"]').click(function() {
+                var splitted = '';
+                $('.grid td input[type="checkbox"]:checked').each(function() {
+                    splitted += $(this).attr('arg') + ';';
+                });
+                if (!splitted.length)
+                    alert('Необходимо выбрать отзывы.');
+                else {
+                    $.post(saveLink, { action: $(this).attr('arg'), list: splitted }, function(data) {
+                        document.location.href = document.location.href;
+                    });
+                }
+                return false;
+            });
+
+        })
+    </script>
+}

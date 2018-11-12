@@ -1,0 +1,76 @@
+﻿@{
+    ViewBag.Title = "Импорт прайс-листа ";
+    Layout = "~/Views/Shared/_Master.cshtml";
+}
+@model DownloadInfo
+@*new { partnerName = "УЧКНИГА" }*@
+@Html.Partial("SectionListImporter", Model.SectionListDownloadInfo)
+<h2>Импорт каталога издательства Учкнига</h2>
+@using (Html.BeginForm("UchKniga", "Import"))
+{
+    @Html.ValidationSummary(true)
+    <fieldset>
+        <div class="editor-label">
+            @Html.LabelFor(model => model.URL) 
+        </div>
+        <div class="editor-field">
+            @Html.TextBoxFor(model => model.URL)
+            @Html.ValidationMessageFor(model => model.URL)
+        </div>
+        <input type="submit" value="Загрузить каталог" />
+        @Html.Raw(@Model.Message)
+
+        <br />
+        <br />
+        <div style="display: none" class="message-cell">
+            @*
+        <div class="dirs">
+            Обработано&nbsp;<b></b>&nbsp;страниц каталога</div>
+*@
+            <div class="created">
+                Создано&nbsp;<b></b>&nbsp;записей
+            </div>
+            <div class="updated">
+                Обновлено&nbsp;<b></b>&nbsp;записей
+            </div>
+            <div class="errors">
+                Помечено неактивными&nbsp;<b></b>&nbsp;записей
+            </div>
+            <br />
+            <div class="message-box">
+            </div>
+        </div>
+    </fieldset>
+   
+}
+@section scripts
+{
+    <script src="@Url.Content("~/Scripts/jquery.validate.min.js")" type="text/javascript"></script>
+    <script src="@Url.Content("~/Scripts/jquery.validate.unobtrusive.min.js")" type="text/javascript"></script>
+    <script type="text/javascript">
+        var refreshURL = '@Url.Action("loadInfo", "Parser")';
+        $().ready(function () {
+            loadInfo();
+        });
+
+        function loadInfo() {
+            $.get(refreshURL, { name: 'УЧКНИГА' }, function (data) {
+                if (!data.StartDate)
+                    return;
+                $('.message-cell').show();
+                $('.message-box').html(data.MessageList);
+                $('.dirs b').html(data.Dirs);
+                $('.created b').html(data.Created);
+                $('.updated b').html(data.Updated);
+                $('.errors b').html(data.Deleted);
+
+                if (!data.EndDate)
+                    setTimeout('loadInfo();', 2000);
+                else if (!$('.start').length) {
+                    //window.location.reload();
+                }
+            });
+
+        }
+    </script>
+}

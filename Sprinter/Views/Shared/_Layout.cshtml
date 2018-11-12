@@ -1,0 +1,54 @@
+﻿<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+    <meta http-equiv="content-type" content="text/html; charset=utf-8" />
+    <title>@AccessHelper.CurrentPageInfo.Title</title>
+    <meta name="keywords" content="@AccessHelper.CurrentPageInfo.Keywords" />
+    <meta name="description" content="@AccessHelper.CurrentPageInfo.Description" />
+    <link rel="stylesheet" href="/Content/client/style.css" type="text/css" media="screen, projection" />
+    <!--[if lte IE 6]><link rel="stylesheet" href="/Content/client/style_ie.css" type="text/css" media="screen, projection" /><![endif]-->
+    @Scripts.Render("~/Content/client/header")
+</head>
+<body>
+    <div id="wrapper">
+        @Html.Action("Header", "CommonBlocks")
+        <div id="@(AccessHelper.CurrentPageInfo.IsProfilePage ? "middle2" : "middle")">
+            <div id="container">
+                <div id="content">
+                    @Html.Action("Search", "CommonBlocks")
+                    @if (!AccessHelper.CurrentPageInfo.IsProfilePage)
+                    {
+                        @RenderBody()
+                    }
+                </div>
+            </div>
+            @Html.Action("LeftColumn", "CommonBlocks")
+        </div>
+        @if (AccessHelper.CurrentPageInfo.IsProfilePage)
+        {
+            @RenderBody()
+        }
+
+        <div id="footer">
+            @Html.Action("Footer", "CommonBlocks")
+        </div>
+        @try
+        {
+            @Html.Action("FeedBackPopup", "Forms")
+        }
+        catch{}
+        @if(!AccessHelper.IsAuthClient)
+        {
+            @Html.Action("Auth", "Forms")
+            @Html.Action("Register", "Forms")
+            @Html.Action("RestorePass", "Forms")
+        }
+        @if (AccessHelper.CurrentPageInfo.CurrentBook != null)
+        {
+            @Html.Action("Comment", "Forms")
+        }
+    </div>
+    @Scripts.Render("~/Content/client/footer")
+    @RenderSection("scripts", required: false)
+</body>
+</html>

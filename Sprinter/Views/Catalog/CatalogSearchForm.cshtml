@@ -1,0 +1,145 @@
+﻿@model MasterSearchData
+@using (Html.BeginForm("CatalogSearchForm", "Catalog", Model.CreateRoutes(Request.QueryString.ToString())))
+{
+    @Html.ValidationSummary(true)
+    @Html.Hidden("RedirectAction", Model.RedirectAction)
+    <fieldset id="search-form">
+        <table style="float: left; width: 100%">
+            <tr>
+                <td>
+
+                    <div id="tree-filter" style="height: 400px; overflow-y: scroll; overflow-x: hidden; width: 350px;">
+                    </div>
+                    @Html.HiddenFor(model => model.PageListPlain)
+                </td>
+                <td>
+                    <table style="width: 100%; float: right">
+                        <tr>
+                            <td colspan="2">
+                                <b>Поисковая фраза:</b>
+                                @Html.TextBoxFor(model => model.SearchWords, new { style = "width:100%" })
+                            </td>
+                        </tr>
+                        <tr>
+                            <td style="width: 50%">
+                                @Html.CheckBoxFor(model => model.ByName)
+                                @Html.LabelFor(model => model.ByName, "По названию")
+                            </td>
+                            <td>
+                                @Html.CheckBoxFor(model => model.ByIsbn)
+                                @Html.LabelFor(model => model.ByIsbn, "По ISBN")
+                            </td>
+                        </tr>
+                        <tr>
+                            <td>
+                                @Html.CheckBoxFor(model => model.ByTag)
+                                @Html.LabelFor(model => model.ByTag, "По тегам")
+                            </td>
+                            <td>
+                                @Html.CheckBoxFor(model => model.ByCode)
+                                @Html.LabelFor(model => model.ByCode, "По коду товара")
+                            </td>
+                        </tr>
+                        <tr>
+                            <td>
+                                @Html.CheckBoxFor(model => model.ByAuthor)
+                                @Html.LabelFor(model => model.ByAuthor, "По авторам")
+                            </td>
+                            <td>
+                                @Html.CheckBoxFor(model => model.ByPublisher)
+                                @Html.LabelFor(model => model.ByPublisher, "По издателю")
+                            </td>
+                        </tr>
+                        <tr>
+
+                            <td>
+                                @Html.CheckBoxFor(model => model.ByPartner)
+                                @Html.LabelFor(model => model.ByPartner, "По поставщику")
+                            </td>
+                            <td>
+                                @Html.CheckBoxFor(model => model.ByPrice)
+                                @Html.LabelFor(model => model.ByPrice, "По цене поставщика")
+                            </td>
+
+                        </tr>
+                        <tr>
+                            <td colspan="2">
+                                <hr />
+                            </td>
+                        </tr>
+                        <tr>
+                            <td>
+                                @Html.CheckBoxFor(model => model.ByAnnotation)
+                                @Html.LabelFor(model => model.ByAnnotation, "Поиск по аннотации")
+                            </td>
+
+                            <td>
+                                @Html.CheckBoxFor(model => model.ByNoCover)
+                                @Html.LabelFor(model => model.ByNoCover, "Только товары без обложки")
+                            </td>
+                        </tr>
+                        <tr>
+
+                            <td>
+                                @Html.CheckBoxFor(model => model.ByAvailableOnly)
+                                @Html.LabelFor(model => model.ByAvailableOnly, "Только товары в наличии")
+                            </td>
+
+                            <td>
+                                @Html.CheckBoxFor(model => model.ByNoAnnotation)
+                                @Html.LabelFor(model => model.ByNoAnnotation, "Только товары без описания")
+                            </td>
+                        </tr>
+
+                        <tr>
+                            <td>
+                                @Html.CheckBoxFor(model => model.ByNewsOnly)
+                                @Html.LabelFor(model => model.ByNewsOnly, "Только новинки")
+                            </td>
+
+                            <td>
+                                @Html.CheckBoxFor(model => model.BySpecOnly)
+                                @Html.LabelFor(model => model.BySpecOnly, "Только спецпредложения")
+                            </td>
+                        </tr>
+                        <tr>
+
+                            <td>
+                                @Html.CheckBoxFor(model => model.ByTopOnly)
+                                @Html.LabelFor(model => model.ByTopOnly, "Только лидеры продаж")
+                            </td>
+                            <td>
+                                @Html.CheckBoxFor(model => model.ByFixPrice)
+                                @Html.LabelFor(model => model.ByFixPrice, "Только с фиксированной ценой")
+                            </td>
+                        </tr>
+
+                        <tr>
+                            <td>
+                                <b>Результатов на странице:</b>
+                            </td>
+                            <td>
+                                @Html.TextBoxFor(model => model.ResultCount, new { style = "width:50px" })
+                            </td>
+                        </tr>
+                        <tr>
+                            <td>
+                                <b>Всего найдено записей:</b>
+                            </td>
+                            <td>
+                                @Model.SearchedCount
+                            </td>
+                        </tr>
+                        <tr>
+                            <td colspan="2">
+                                <input type="submit" value="Искать" />
+                            </td>
+                        </tr>
+                    </table>
+                </td>
+            </tr>
+
+        </table>
+    </fieldset>
+    <br />
+}

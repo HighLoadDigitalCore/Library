@@ -1,0 +1,50 @@
+﻿@model BooksOnMain
+@{
+    ViewBag.Title = "Редактирование записи в списке";
+    Layout = "~/Views/Shared/_Master.cshtml";
+}
+<h2>@ViewBag.Header</h2>
+@using (Html.BeginForm())
+{
+    @Html.ValidationSummary(true)
+
+    <fieldset>
+        @Html.HiddenFor(model => model.ID)
+        @if (Model.ID > 0)
+        {
+            <div class="editor-label">
+                @Html.Label("Название книги:")|
+            </div>
+            <div class="editor-field">
+                <b>@Html.Raw(Model.BookSaleCatalog.BookDescriptionCatalog.Header)</b>
+            </div>
+        }
+        <div class="editor-label">
+            @Html.Label("Подгруппа товаров:")
+        </div>
+        <div class="editor-field">
+            @Html.DropDownList("SubGroupNum", ViewBag.SubGroupList as SelectList)
+        </div>
+        <div class="editor-label">
+            @Html.LabelFor(model => model.OrderNum)
+        </div>
+        <div class="editor-field">
+            @Html.EditorFor(model => model.OrderNum)
+            @Html.ValidationMessageFor(model => model.OrderNum)
+        </div>
+        <div class="editor-label">
+            @Html.LabelFor(model => model.SaleCatalogID)
+        </div>
+        <div class="editor-field">
+            @Html.EditorFor(model => model.SaleCatalogID)
+            @Html.ValidationMessageFor(model => model.SaleCatalogID)
+        </div>
+        <input type="submit" value="Сохранить" />
+    </fieldset>
+}
+<div class="backref">
+    @Html.ActionLink("Назад к списку", "EditTabs", new{tab=Request["tab"]}, null)
+</div>
+@section scripts {
+    @Scripts.Render("~/bundles/jqueryval")
+}

@@ -1,0 +1,733 @@
+﻿<?xml version="1.0" encoding="utf-8"?><Database Name="Sprinter" Class="DB" xmlns="http://schemas.microsoft.com/linqtosql/dbml/2007">
+  <Connection Mode="WebSettings" ConnectionString="Data Source=ANTON-PC\SQLDEVELOP;Initial Catalog=Sprinter;Persist Security Info=True;User ID=sa" SettingsObjectName="System.Configuration.ConfigurationManager.ConnectionStrings" SettingsPropertyName="SprinterConnectionString" Provider="System.Data.SqlClient" />
+  <Table Name="dbo.PageTypes" Member="PageTypes">
+    <Type Name="PageType">
+      <Column Name="ID" Type="System.Int32" DbType="Int NOT NULL IDENTITY" IsPrimaryKey="true" IsDbGenerated="true" CanBeNull="false" />
+      <Column Name="TypeName" Type="System.String" DbType="NVarChar(100) NOT NULL" CanBeNull="false" />
+      <Column Name="Description" Type="System.String" DbType="NVarChar(512) NOT NULL" CanBeNull="false" />
+      <Association Name="PageType_CMSPage" Member="CMSPages" ThisKey="ID" OtherKey="Type" Type="CMSPage" />
+    </Type>
+  </Table>
+  <Table Name="dbo.BookPublishers" Member="BookPublishers">
+    <Type Name="BookPublisher">
+      <Column Name="ID" Type="System.Int32" DbType="Int NOT NULL IDENTITY" IsPrimaryKey="true" IsDbGenerated="true" CanBeNull="false" />
+      <Column Name="Name" Type="System.String" DbType="NVarChar(400) NOT NULL" CanBeNull="false" />
+      <Column Name="Description" Type="System.String" DbType="NVarChar(MAX)" CanBeNull="true" />
+      <Association Name="BookPublisher_BookPublisherMargin" Member="BookPublisherMargins" ThisKey="ID" OtherKey="PublisherID" Type="BookPublisherMargin" />
+      <Association Name="BookPublisher_BookDescriptionCatalog" Member="BookDescriptionCatalogs" ThisKey="ID" OtherKey="PublisherID" Type="BookDescriptionCatalog" />
+    </Type>
+  </Table>
+  <Table Name="dbo.BookPageRels" Member="BookPageRels">
+    <Type Name="BookPageRel">
+      <Column Name="ID" Type="System.Int32" DbType="Int NOT NULL IDENTITY" IsPrimaryKey="true" IsDbGenerated="true" CanBeNull="false" />
+      <Column Name="PageID" Type="System.Int32" DbType="Int NOT NULL" CanBeNull="false" />
+      <Column Name="SaleCatalogID" Type="System.Int32" DbType="Int NOT NULL" CanBeNull="false" />
+      <Association Name="BookSaleCatalog_BookPageRel" Member="BookSaleCatalog" ThisKey="SaleCatalogID" OtherKey="ID" Type="BookSaleCatalog" IsForeignKey="true" DeleteRule="CASCADE" DeleteOnNull="true" />
+      <Association Name="CMSPage_BookPageRel" Member="CMSPage" ThisKey="PageID" OtherKey="ID" Type="CMSPage" IsForeignKey="true" DeleteRule="CASCADE" DeleteOnNull="true" />
+    </Type>
+  </Table>
+  <Table Name="dbo.BookDescriptionProviders" Member="BookDescriptionProviders">
+    <Type Name="BookDescriptionProvider">
+      <Column Name="ID" Type="System.Int32" DbType="Int NOT NULL IDENTITY" IsPrimaryKey="true" IsDbGenerated="true" CanBeNull="false" />
+      <Column Name="ProviderName" Type="System.String" DbType="NVarChar(128) NOT NULL" CanBeNull="false" />
+      <Column Name="Description" Type="System.String" DbType="NVarChar(512)" CanBeNull="true" />
+      <Column Name="IsPriceProvider" Type="System.Boolean" DbType="Bit NOT NULL" CanBeNull="false" />
+      <Column Name="DataURL" Type="System.String" DbType="NVarChar(512)" CanBeNull="true" />
+      <Column Name="LastUpdateDate" Type="System.DateTime" DbType="DateTime" CanBeNull="true" />
+      <Column Name="LoadCoversOnDemand" Type="System.Boolean" DbType="Bit NOT NULL" CanBeNull="false" />
+      <Association Name="BookDescriptionProvider_BookPrice" Member="BookPrices" ThisKey="ID" OtherKey="ProviderID" Type="BookPrice" />
+      <Association Name="BookDescriptionProvider_BookDescriptionCatalog" Member="BookDescriptionCatalogs" ThisKey="ID" OtherKey="DataSourceID" Type="BookDescriptionCatalog" />
+    </Type>
+  </Table>
+  <Table Name="dbo.BookCovers" Member="BookCovers">
+    <Type Name="BookCover">
+      <Column Name="ID" Type="System.Int32" DbType="Int NOT NULL IDENTITY" IsPrimaryKey="true" IsDbGenerated="true" CanBeNull="false" />
+      <Column Name="Data" Type="System.Data.Linq.Binary" DbType="VarBinary(MAX) NOT NULL" CanBeNull="false" UpdateCheck="Never" />
+      <Column Name="Name" Type="System.String" DbType="NVarChar(512)" CanBeNull="true" />
+      <Column Name="Width" Type="System.Int32" DbType="Int NOT NULL" CanBeNull="false" />
+      <Column Name="Height" Type="System.Int32" DbType="Int NOT NULL" CanBeNull="false" />
+      <Association Name="BookCover_BookDescriptionCatalog" Member="BookDescriptionCatalogs" ThisKey="ID" OtherKey="CoverID" Type="BookDescriptionCatalog" />
+    </Type>
+  </Table>
+  <Table Name="dbo.BookAuthorsRels" Member="BookAuthorsRels">
+    <Type Name="BookAuthorsRel">
+      <Column Name="ID" Type="System.Int32" DbType="Int NOT NULL IDENTITY" IsPrimaryKey="true" IsDbGenerated="true" CanBeNull="false" />
+      <Column Name="BookDescriptionID" Type="System.Int32" DbType="Int NOT NULL" CanBeNull="false" />
+      <Column Name="AuthorID" Type="System.Int32" DbType="Int NOT NULL" CanBeNull="false" />
+      <Association Name="Author_BookAuthorsRel" Member="Author" ThisKey="AuthorID" OtherKey="ID" Type="Author" IsForeignKey="true" DeleteRule="CASCADE" DeleteOnNull="true" />
+      <Association Name="BookDescriptionCatalog_BookAuthorsRel" Member="BookDescriptionCatalog" ThisKey="BookDescriptionID" OtherKey="ID" Type="BookDescriptionCatalog" IsForeignKey="true" DeleteRule="CASCADE" DeleteOnNull="true" />
+    </Type>
+  </Table>
+  <Table Name="dbo.Authors" Member="Authors">
+    <Type Name="Author">
+      <Column Name="ID" Type="System.Int32" DbType="Int NOT NULL IDENTITY" IsPrimaryKey="true" IsDbGenerated="true" CanBeNull="false" />
+      <Column Name="FIO" Type="System.String" DbType="NVarChar(400) NOT NULL" CanBeNull="false" />
+      <Column Name="About" Type="System.String" DbType="NVarChar(MAX)" CanBeNull="true" />
+      <Association Name="Author_BookAuthorsRel" Member="BookAuthorsRels" ThisKey="ID" OtherKey="AuthorID" Type="BookAuthorsRel" />
+    </Type>
+  </Table>
+  <Table Name="dbo.BookTags" Member="BookTags">
+    <Type Name="BookTag">
+      <Column Name="ID" Type="System.Int32" DbType="Int NOT NULL IDENTITY" IsPrimaryKey="true" IsDbGenerated="true" CanBeNull="false" />
+      <Column Name="Tag" Type="System.String" DbType="NVarChar(200) NOT NULL" CanBeNull="false" />
+      <Association Name="BookTag_BookTagRel" Member="BookTagRels" ThisKey="ID" OtherKey="TagID" Type="BookTagRel" />
+      <Association Name="BookTag_TagComplexFilterItem" Member="TagComplexFilterItems" ThisKey="ID" OtherKey="TagID" Type="TagComplexFilterItem" />
+      <Association Name="BookTag_TagSimpleFilterItem" Member="TagSimpleFilterItems" ThisKey="ID" OtherKey="TagID" Type="TagSimpleFilterItem" />
+    </Type>
+  </Table>
+  <Table Name="dbo.BookTagRels" Member="BookTagRels">
+    <Type Name="BookTagRel">
+      <Column Name="ID" Type="System.Int32" DbType="Int NOT NULL IDENTITY" IsPrimaryKey="true" IsDbGenerated="true" CanBeNull="false" />
+      <Column Name="DescriptionID" Type="System.Int32" DbType="Int NOT NULL" CanBeNull="false" />
+      <Column Name="TagID" Type="System.Int32" DbType="Int NOT NULL" CanBeNull="false" />
+      <Association Name="BookTag_BookTagRel" Member="BookTag" ThisKey="TagID" OtherKey="ID" Type="BookTag" IsForeignKey="true" DeleteRule="CASCADE" DeleteOnNull="true" />
+      <Association Name="BookDescriptionCatalog_BookTagRel" Member="BookDescriptionCatalog" ThisKey="DescriptionID" OtherKey="ID" Type="BookDescriptionCatalog" IsForeignKey="true" DeleteRule="CASCADE" DeleteOnNull="true" />
+    </Type>
+  </Table>
+  <Table Name="dbo.TagComplexFilterItem" Member="TagComplexFilterItems">
+    <Type Name="TagComplexFilterItem">
+      <Column Name="ID" Type="System.Int32" DbType="Int NOT NULL IDENTITY" IsPrimaryKey="true" IsDbGenerated="true" CanBeNull="false" />
+      <Column Name="FilterListID" Type="System.Int32" DbType="Int NOT NULL" CanBeNull="false" />
+      <Column Name="TagID" Type="System.Int32" DbType="Int NOT NULL" CanBeNull="false" />
+      <Association Name="BookTag_TagComplexFilterItem" Member="BookTag" ThisKey="TagID" OtherKey="ID" Type="BookTag" IsForeignKey="true" DeleteRule="CASCADE" DeleteOnNull="true" />
+      <Association Name="TagComplexFilterList_TagComplexFilterItem" Member="TagComplexFilterList" ThisKey="FilterListID" OtherKey="ID" Type="TagComplexFilterList" IsForeignKey="true" DeleteRule="CASCADE" DeleteOnNull="true" />
+    </Type>
+  </Table>
+  <Table Name="dbo.TagComplexFilterLists" Member="TagComplexFilterLists">
+    <Type Name="TagComplexFilterList">
+      <Column Name="ID" Type="System.Int32" DbType="Int NOT NULL IDENTITY" IsPrimaryKey="true" IsDbGenerated="true" CanBeNull="false" />
+      <Column Name="ItemHeader" Type="System.String" DbType="NVarChar(512) NOT NULL" CanBeNull="false" />
+      <Column Name="DefaultValue" Type="System.String" DbType="NVarChar(512) NOT NULL" CanBeNull="false" />
+      <Column Name="ComplexFilterID" Type="System.Int32" DbType="Int NOT NULL" CanBeNull="false" />
+      <Association Name="TagComplexFilterList_TagComplexFilterItem" Member="TagComplexFilterItems" ThisKey="ID" OtherKey="FilterListID" Type="TagComplexFilterItem" />
+      <Association Name="TagComplexFilter_TagComplexFilterList" Member="TagComplexFilter" ThisKey="ComplexFilterID" OtherKey="ID" Type="TagComplexFilter" IsForeignKey="true" DeleteRule="CASCADE" DeleteOnNull="true" />
+    </Type>
+  </Table>
+  <Table Name="dbo.TagComplexFilters" Member="TagComplexFilters">
+    <Type Name="TagComplexFilter">
+      <Column Name="ID" Type="System.Int32" DbType="Int NOT NULL IDENTITY" IsPrimaryKey="true" IsDbGenerated="true" CanBeNull="false" />
+      <Column Name="Name" Type="System.String" DbType="NVarChar(512) NOT NULL" CanBeNull="false" />
+      <Column Name="PageID" Type="System.Int32" DbType="Int NOT NULL" CanBeNull="false" />
+      <Column Name="Visible" Type="System.Boolean" DbType="Bit NOT NULL" CanBeNull="false" />
+      <Association Name="TagComplexFilter_TagComplexFilterList" Member="TagComplexFilterLists" ThisKey="ID" OtherKey="ComplexFilterID" Type="TagComplexFilterList" />
+      <Association Name="CMSPage_TagComplexFilter" Member="CMSPage" ThisKey="PageID" OtherKey="ID" Type="CMSPage" IsForeignKey="true" DeleteRule="CASCADE" DeleteOnNull="true" />
+    </Type>
+  </Table>
+  <Table Name="dbo.TagSimpleFilterItems" Member="TagSimpleFilterItems">
+    <Type Name="TagSimpleFilterItem">
+      <Column Name="ID" Type="System.Int32" DbType="Int NOT NULL IDENTITY" IsPrimaryKey="true" IsDbGenerated="true" CanBeNull="false" />
+      <Column Name="SimpleFilterID" Type="System.Int32" DbType="Int NOT NULL" CanBeNull="false" />
+      <Column Name="TagID" Type="System.Int32" DbType="Int NOT NULL" CanBeNull="false" />
+      <Association Name="BookTag_TagSimpleFilterItem" Member="BookTag" ThisKey="TagID" OtherKey="ID" Type="BookTag" IsForeignKey="true" DeleteRule="CASCADE" DeleteOnNull="true" />
+      <Association Name="TagSimpleFilter_TagSimpleFilterItem" Member="TagSimpleFilter" ThisKey="SimpleFilterID" OtherKey="ID" Type="TagSimpleFilter" IsForeignKey="true" DeleteRule="CASCADE" DeleteOnNull="true" />
+    </Type>
+  </Table>
+  <Table Name="dbo.TagSimpleFilters" Member="TagSimpleFilters">
+    <Type Name="TagSimpleFilter">
+      <Column Name="ID" Type="System.Int32" DbType="Int NOT NULL IDENTITY" IsPrimaryKey="true" IsDbGenerated="true" CanBeNull="false" />
+      <Column Name="Name" Type="System.String" DbType="NVarChar(512) NOT NULL" CanBeNull="false" />
+      <Column Name="PageID" Type="System.Int32" DbType="Int NOT NULL" CanBeNull="false" />
+      <Column Name="Visible" Type="System.Boolean" DbType="Bit NOT NULL" CanBeNull="false" />
+      <Association Name="TagSimpleFilter_TagSimpleFilterItem" Member="TagSimpleFilterItems" ThisKey="ID" OtherKey="SimpleFilterID" Type="TagSimpleFilterItem" />
+      <Association Name="CMSPage_TagSimpleFilter" Member="CMSPage" ThisKey="PageID" OtherKey="ID" Type="CMSPage" IsForeignKey="true" DeleteRule="CASCADE" DeleteOnNull="true" />
+    </Type>
+  </Table>
+  <Table Name="dbo.PageTextData" Member="PageTextDatas">
+    <Type Name="PageTextData">
+      <Column Name="ID" Type="System.Int32" DbType="Int NOT NULL IDENTITY" IsPrimaryKey="true" IsDbGenerated="true" CanBeNull="false" />
+      <Column Name="ShowHeader" Type="System.Boolean" DbType="Bit NOT NULL" CanBeNull="false" />
+      <Column Name="Text" Type="System.String" DbType="NVarChar(MAX) NOT NULL" CanBeNull="false" />
+      <Column Name="PageID" Type="System.Int32" DbType="Int NOT NULL" CanBeNull="false" />
+      <Association Name="CMSPage_PageTextData" Member="CMSPage" ThisKey="PageID" OtherKey="ID" Type="CMSPage" IsForeignKey="true" DeleteRule="CASCADE" DeleteOnNull="true" />
+    </Type>
+  </Table>
+  <Table Name="dbo.BooksOnMain" Member="BooksOnMains">
+    <Type Name="BooksOnMain">
+      <Column Name="ID" Type="System.Int32" DbType="Int NOT NULL IDENTITY" IsPrimaryKey="true" IsDbGenerated="true" CanBeNull="false" />
+      <Column Name="GroupNum" Type="System.Int32" DbType="Int NOT NULL" CanBeNull="false" />
+      <Column Name="SubGroupNum" Type="System.Int32" DbType="Int NOT NULL" CanBeNull="false" />
+      <Column Name="OrderNum" Type="System.Int32" DbType="Int NOT NULL" CanBeNull="false" />
+      <Column Name="SaleCatalogID" Type="System.Int32" DbType="Int NOT NULL" CanBeNull="false" />
+      <Association Name="BookSaleCatalog_BooksOnMain" Member="BookSaleCatalog" ThisKey="SaleCatalogID" OtherKey="ID" Type="BookSaleCatalog" IsForeignKey="true" DeleteRule="CASCADE" DeleteOnNull="true" />
+    </Type>
+  </Table>
+  <Table Name="dbo.aspnet_Users" Member="Users">
+    <Type Name="User">
+      <Column Name="ApplicationId" Type="System.Guid" DbType="UniqueIdentifier NOT NULL" CanBeNull="false" />
+      <Column Name="UserId" Type="System.Guid" DbType="UniqueIdentifier NOT NULL" IsPrimaryKey="true" CanBeNull="false" />
+      <Column Name="UserName" Type="System.String" DbType="NVarChar(256) NOT NULL" CanBeNull="false" />
+      <Column Name="LoweredUserName" Type="System.String" DbType="NVarChar(256) NOT NULL" CanBeNull="false" />
+      <Column Name="MobileAlias" Type="System.String" DbType="NVarChar(16)" CanBeNull="true" />
+      <Column Name="IsAnonymous" Type="System.Boolean" DbType="Bit NOT NULL" CanBeNull="false" />
+      <Column Name="LastActivityDate" Type="System.DateTime" DbType="DateTime NOT NULL" CanBeNull="false" />
+      <Association Name="User_UsersInRole" Member="UsersInRoles" ThisKey="UserId" OtherKey="UserId" Type="UsersInRole" />
+      <Association Name="User_MembershipData" Member="MembershipData" ThisKey="UserId" OtherKey="UserId" Type="MembershipData" Cardinality="One" />
+      <Association Name="User_Order" Member="Orders" ThisKey="UserId" OtherKey="UserID" Type="Order" />
+      <Association Name="User_ShopCart" Member="ShopCarts" ThisKey="UserId" OtherKey="UserID" Type="ShopCart" />
+      <Association Name="User_BookComment" Member="BookComments" ThisKey="UserId" OtherKey="UserID" Type="BookComment" />
+      <Association Name="User_UserProfile" Member="UserProfile" ThisKey="UserId" OtherKey="UserID" Type="UserProfile" Cardinality="One" />
+    </Type>
+  </Table>
+  <Table Name="dbo.aspnet_UsersInRoles" Member="UsersInRoles">
+    <Type Name="UsersInRole">
+      <Column Name="UserId" Type="System.Guid" DbType="UniqueIdentifier NOT NULL" IsPrimaryKey="true" CanBeNull="false" />
+      <Column Name="RoleId" Type="System.Guid" DbType="UniqueIdentifier NOT NULL" IsPrimaryKey="true" CanBeNull="false" />
+      <Association Name="User_UsersInRole" Member="User" ThisKey="UserId" OtherKey="UserId" Type="User" IsForeignKey="true" />
+      <Association Name="Role_UsersInRole" Member="Role" ThisKey="RoleId" OtherKey="RoleId" Type="Role" IsForeignKey="true" />
+    </Type>
+  </Table>
+  <Table Name="dbo.aspnet_Roles" Member="Roles">
+    <Type Name="Role">
+      <Column Name="ApplicationId" Type="System.Guid" DbType="UniqueIdentifier NOT NULL" CanBeNull="false" />
+      <Column Name="RoleId" Type="System.Guid" DbType="UniqueIdentifier NOT NULL" IsPrimaryKey="true" CanBeNull="false" />
+      <Column Name="RoleName" Type="System.String" DbType="NVarChar(256) NOT NULL" CanBeNull="false" />
+      <Column Name="LoweredRoleName" Type="System.String" DbType="NVarChar(256) NOT NULL" CanBeNull="false" />
+      <Column Name="Description" Type="System.String" DbType="NVarChar(256)" CanBeNull="true" />
+      <Association Name="Role_UsersInRole" Member="UsersInRoles" ThisKey="RoleId" OtherKey="RoleId" Type="UsersInRole" />
+    </Type>
+  </Table>
+  <Table Name="dbo.aspnet_Membership" Member="MembershipDatas">
+    <Type Name="MembershipData">
+      <Column Name="ApplicationId" Type="System.Guid" DbType="UniqueIdentifier NOT NULL" CanBeNull="false" />
+      <Column Name="UserId" Type="System.Guid" DbType="UniqueIdentifier NOT NULL" IsPrimaryKey="true" CanBeNull="false" />
+      <Column Name="Password" Type="System.String" DbType="NVarChar(128) NOT NULL" CanBeNull="false" />
+      <Column Name="PasswordFormat" Type="System.Int32" DbType="Int NOT NULL" CanBeNull="false" />
+      <Column Name="PasswordSalt" Type="System.String" DbType="NVarChar(128) NOT NULL" CanBeNull="false" />
+      <Column Name="MobilePIN" Type="System.String" DbType="NVarChar(16)" CanBeNull="true" />
+      <Column Name="Email" Type="System.String" DbType="NVarChar(256)" CanBeNull="true" />
+      <Column Name="LoweredEmail" Type="System.String" DbType="NVarChar(256)" CanBeNull="true" />
+      <Column Name="PasswordQuestion" Type="System.String" DbType="NVarChar(256)" CanBeNull="true" />
+      <Column Name="PasswordAnswer" Type="System.String" DbType="NVarChar(128)" CanBeNull="true" />
+      <Column Name="IsApproved" Type="System.Boolean" DbType="Bit NOT NULL" CanBeNull="false" />
+      <Column Name="IsLockedOut" Type="System.Boolean" DbType="Bit NOT NULL" CanBeNull="false" />
+      <Column Name="CreateDate" Type="System.DateTime" DbType="DateTime NOT NULL" CanBeNull="false" />
+      <Column Name="LastLoginDate" Type="System.DateTime" DbType="DateTime NOT NULL" CanBeNull="false" />
+      <Column Name="LastPasswordChangedDate" Type="System.DateTime" DbType="DateTime NOT NULL" CanBeNull="false" />
+      <Column Name="LastLockoutDate" Type="System.DateTime" DbType="DateTime NOT NULL" CanBeNull="false" />
+      <Column Name="FailedPasswordAttemptCount" Type="System.Int32" DbType="Int NOT NULL" CanBeNull="false" />
+      <Column Name="FailedPasswordAttemptWindowStart" Type="System.DateTime" DbType="DateTime NOT NULL" CanBeNull="false" />
+      <Column Name="FailedPasswordAnswerAttemptCount" Type="System.Int32" DbType="Int NOT NULL" CanBeNull="false" />
+      <Column Name="FailedPasswordAnswerAttemptWindowStart" Type="System.DateTime" DbType="DateTime NOT NULL" CanBeNull="false" />
+      <Column Name="Comment" Type="System.String" DbType="NText" CanBeNull="true" UpdateCheck="Never" />
+      <Association Name="User_MembershipData" Member="User" ThisKey="UserId" OtherKey="UserId" Type="User" IsForeignKey="true" />
+    </Type>
+  </Table>
+  <Table Name="dbo.OrderStatus" Member="OrderStatus">
+    <Type Name="OrderStatus">
+      <Column Name="ID" Type="System.Int32" DbType="Int NOT NULL IDENTITY" IsPrimaryKey="true" IsDbGenerated="true" CanBeNull="false" />
+      <Column Name="Status" Type="System.String" DbType="NVarChar(50) NOT NULL" CanBeNull="false" />
+      <Column Name="EngName" Type="System.String" DbType="NVarChar(50) NOT NULL" CanBeNull="false" />
+      <Association Name="OrderStatus_Order" Member="Orders" ThisKey="ID" OtherKey="StatusID" Type="Order" />
+    </Type>
+  </Table>
+  <Table Name="dbo.Orders" Member="Orders">
+    <Type Name="Order">
+      <Column Name="ID" Type="System.Int32" DbType="Int NOT NULL IDENTITY" IsPrimaryKey="true" IsDbGenerated="true" CanBeNull="false" />
+      <Column Name="UserID" Type="System.Guid" DbType="UniqueIdentifier NOT NULL" CanBeNull="false" />
+      <Column Name="CreateDate" Type="System.DateTime" DbType="DateTime NOT NULL" CanBeNull="false" />
+      <Column Name="ImportID" Type="System.String" DbType="NVarChar(50)" CanBeNull="true" />
+      <Column Name="StatusID" Type="System.Int32" DbType="Int NOT NULL" CanBeNull="false" />
+      <Column Name="Number" Type="System.Int32" DbType="Int" CanBeNull="true" />
+      <Association Name="Order_OrderedBook" Member="OrderedBooks" ThisKey="ID" OtherKey="OrderID" Type="OrderedBook" />
+      <Association Name="Order_OrderDetail" Member="OrderDetail" ThisKey="ID" OtherKey="OrderID" Type="OrderDetail" Cardinality="One" />
+      <Association Name="Order_OrderComment" Member="OrderComments" ThisKey="ID" OtherKey="OrderID" Type="OrderComment" />
+      <Association Name="User_Order" Member="User" ThisKey="UserID" OtherKey="UserId" Type="User" IsForeignKey="true" DeleteRule="CASCADE" DeleteOnNull="true" />
+      <Association Name="OrderStatus_Order" Member="OrderStatus" ThisKey="StatusID" OtherKey="ID" Type="OrderStatus" IsForeignKey="true" />
+    </Type>
+  </Table>
+  <Table Name="dbo.OrderedBooks" Member="OrderedBooks">
+    <Type Name="OrderedBook">
+      <Column Name="ID" Type="System.Int32" DbType="Int NOT NULL IDENTITY" IsPrimaryKey="true" IsDbGenerated="true" CanBeNull="false" />
+      <Column Name="BookDescriptionID" Type="System.Int32" DbType="Int NOT NULL" CanBeNull="false" />
+      <Column Name="SalePrice" Type="System.Decimal" DbType="Decimal(18,2) NOT NULL" CanBeNull="false" />
+      <Column Name="Amount" Type="System.Int32" DbType="Int NOT NULL" CanBeNull="false" />
+      <Column Name="ImportUID" Type="System.String" DbType="NVarChar(50)" CanBeNull="true" />
+      <Column Name="OrderID" Type="System.Int32" DbType="Int NOT NULL" CanBeNull="false" />
+      <Column Name="PartnerID" Type="System.Int32" DbType="Int" CanBeNull="true" />
+      <Association Name="Order_OrderedBook" Member="Order" ThisKey="OrderID" OtherKey="ID" Type="Order" IsForeignKey="true" DeleteRule="CASCADE" DeleteOnNull="true" />
+      <Association Name="Partner_OrderedBook" Member="Partner" ThisKey="PartnerID" OtherKey="ID" Type="Partner" IsForeignKey="true" DeleteRule="SET NULL" />
+      <Association Name="BookDescriptionCatalog_OrderedBook" Member="BookDescriptionCatalog" ThisKey="BookDescriptionID" OtherKey="ID" Type="BookDescriptionCatalog" IsForeignKey="true" DeleteRule="CASCADE" DeleteOnNull="true" />
+    </Type>
+  </Table>
+  <Table Name="dbo.Partners" Member="Partners">
+    <Type Name="Partner">
+      <Column Name="ID" Type="System.Int32" DbType="Int NOT NULL IDENTITY" IsPrimaryKey="true" IsDbGenerated="true" CanBeNull="false" />
+      <Column Name="Name" Type="System.String" DbType="NVarChar(400) NOT NULL" CanBeNull="false" />
+      <Column Name="Description" Type="System.String" DbType="NVarChar(MAX)" CanBeNull="true" />
+      <Column Name="Margin" Type="System.Decimal" DbType="Decimal(18,2) NOT NULL" CanBeNull="false" />
+      <Column Name="Discount" Type="System.Decimal" DbType="Decimal(18,2) NOT NULL" CanBeNull="false" />
+      <Column Name="SalePriority" Type="System.Int32" DbType="Int NOT NULL" CanBeNull="false" />
+      <Column Name="Enabled" Type="System.Boolean" DbType="Bit NOT NULL" CanBeNull="false" />
+      <Association Name="Partner_OrderedBook" Member="OrderedBooks" ThisKey="ID" OtherKey="PartnerID" Type="OrderedBook" />
+      <Association Name="Partner_PartnerPriority" Member="PartnerPriorities" ThisKey="ID" OtherKey="PartnerID" Type="PartnerPriority" />
+      <Association Name="Partner_BookSaleCatalog" Member="BookSaleCatalogs" ThisKey="ID" OtherKey="PartnerID" Type="BookSaleCatalog" />
+      <Association Name="Partner_BookPublisherMargin" Member="BookPublisherMargins" ThisKey="ID" OtherKey="PartnerID" Type="BookPublisherMargin" />
+      <Association Name="Partner_PartnerImportSetting" Member="PartnerImportSettings" ThisKey="ID" OtherKey="PartnerID" Type="PartnerImportSetting" />
+    </Type>
+  </Table>
+  <Table Name="dbo.ShopCarts" Member="ShopCarts">
+    <Type Name="ShopCart">
+      <Column Name="ID" Type="System.Int32" DbType="Int NOT NULL IDENTITY" IsPrimaryKey="true" IsDbGenerated="true" CanBeNull="false" />
+      <Column Name="UserID" Type="System.Guid" DbType="UniqueIdentifier" CanBeNull="true" />
+      <Column Name="TemporaryKey" Type="System.Guid" DbType="UniqueIdentifier" CanBeNull="true" />
+      <Column Name="LastRequested" Type="System.DateTime" DbType="DateTime NOT NULL" CanBeNull="false" />
+      <Association Name="ShopCart_ShopCartField" Member="ShopCartFields" ThisKey="ID" OtherKey="ShopCartID" Type="ShopCartField" />
+      <Association Name="ShopCart_ShopCartItem" Member="ShopCartItems" ThisKey="ID" OtherKey="ShopCartID" Type="ShopCartItem" />
+      <Association Name="User_ShopCart" Member="User" ThisKey="UserID" OtherKey="UserId" Type="User" IsForeignKey="true" DeleteRule="CASCADE" />
+    </Type>
+  </Table>
+  <Table Name="dbo.ShopCartFields" Member="ShopCartFields">
+    <Type Name="ShopCartField">
+      <Column Name="ID" Type="System.Int32" DbType="Int NOT NULL IDENTITY" IsPrimaryKey="true" IsDbGenerated="true" CanBeNull="false" />
+      <Column Name="ShopCartID" Type="System.Int32" DbType="Int NOT NULL" CanBeNull="false" />
+      <Column Name="Name" Type="System.String" DbType="NVarChar(50) NOT NULL" CanBeNull="false" />
+      <Column Name="Value" Type="System.String" DbType="NVarChar(MAX) NOT NULL" CanBeNull="false" />
+      <Association Name="ShopCart_ShopCartField" Member="ShopCart" ThisKey="ShopCartID" OtherKey="ID" Type="ShopCart" IsForeignKey="true" DeleteRule="CASCADE" DeleteOnNull="true" />
+    </Type>
+  </Table>
+  <Table Name="dbo.OrderDeliveryGroups" Member="OrderDeliveryGroups">
+    <Type Name="OrderDeliveryGroup">
+      <Column Name="ID" Type="System.Int32" DbType="Int NOT NULL IDENTITY" IsPrimaryKey="true" IsDbGenerated="true" CanBeNull="false" />
+      <Column Name="GroupName" Type="System.String" DbType="NVarChar(100) NOT NULL" CanBeNull="false" />
+      <Column Name="OrderNum" Type="System.Int32" DbType="Int NOT NULL" CanBeNull="false" />
+      <Association Name="OrderDeliveryGroup_OrderDeliveryProvider" Member="OrderDeliveryProviders" ThisKey="ID" OtherKey="GroupID" Type="OrderDeliveryProvider" />
+    </Type>
+  </Table>
+  <Table Name="dbo.OrderDetails" Member="OrderDetails">
+    <Type Name="OrderDetail">
+      <Column Name="OrderID" Type="System.Int32" DbType="Int NOT NULL" IsPrimaryKey="true" CanBeNull="false" />
+      <Column Name="RegionID" Type="System.Int32" DbType="Int" CanBeNull="true" />
+      <Column Name="PaymentType" Type="System.Int32" DbType="Int NOT NULL" CanBeNull="false" />
+      <Column Name="DeliveryType" Type="System.Int32" DbType="Int NOT NULL" CanBeNull="false" />
+      <Column Name="DeliveryCost" Type="System.Decimal" DbType="Decimal(18,2) NOT NULL" CanBeNull="false" />
+      <Column Name="Address" Type="System.String" DbType="NVarChar(MAX)" CanBeNull="true" />
+      <Column Name="OrgData" Type="System.String" DbType="NVarChar(MAX)" CanBeNull="true" />
+      <Association Name="Order_OrderDetail" Member="Order" ThisKey="OrderID" OtherKey="ID" Type="Order" IsForeignKey="true" DeleteRule="CASCADE" DeleteOnNull="true" />
+      <Association Name="OrderDeliveryRegion_OrderDetail" Member="OrderDeliveryRegion" ThisKey="RegionID" OtherKey="ID" Type="OrderDeliveryRegion" IsForeignKey="true" />
+    </Type>
+  </Table>
+  <Table Name="dbo.BookPrices" Member="BookPrices">
+    <Type Name="BookPrice">
+      <Column Name="ID" Type="System.Int32" DbType="Int NOT NULL IDENTITY" IsPrimaryKey="true" IsDbGenerated="true" CanBeNull="false" />
+      <Column Name="Price" Type="System.Decimal" DbType="Decimal(18,2) NOT NULL" CanBeNull="false" />
+      <Column Name="DescriptionID" Type="System.Int32" DbType="Int NOT NULL" CanBeNull="false" />
+      <Column Name="ProviderID" Type="System.Int32" DbType="Int NOT NULL" CanBeNull="false" />
+      <Column Name="Link" Type="System.String" DbType="NVarChar(1000) NOT NULL" CanBeNull="false" />
+      <Association Name="BookDescriptionProvider_BookPrice" Member="BookDescriptionProvider" ThisKey="ProviderID" OtherKey="ID" Type="BookDescriptionProvider" IsForeignKey="true" DeleteRule="CASCADE" DeleteOnNull="true" />
+      <Association Name="BookDescriptionCatalog_BookPrice" Member="BookDescriptionCatalog" ThisKey="DescriptionID" OtherKey="ID" Type="BookDescriptionCatalog" IsForeignKey="true" DeleteRule="CASCADE" DeleteOnNull="true" />
+    </Type>
+  </Table>
+  <Table Name="dbo.PartnerPriority" Member="PartnerPriorities">
+    <Type Name="PartnerPriority">
+      <Column Name="ID" Type="System.Int32" DbType="Int NOT NULL IDENTITY" IsPrimaryKey="true" IsDbGenerated="true" CanBeNull="false" />
+      <Column Name="PartnerID" Type="System.Int32" DbType="Int NOT NULL" CanBeNull="false" />
+      <Column Name="PageID" Type="System.Int32" DbType="Int NOT NULL" CanBeNull="false" />
+      <Column Name="Priority" Type="System.Int32" DbType="Int NOT NULL" CanBeNull="false" />
+      <Association Name="Partner_PartnerPriority" Member="Partner" ThisKey="PartnerID" OtherKey="ID" Type="Partner" IsForeignKey="true" DeleteRule="CASCADE" DeleteOnNull="true" />
+      <Association Name="CMSPage_PartnerPriority" Member="CMSPage" ThisKey="PageID" OtherKey="ID" Type="CMSPage" IsForeignKey="true" DeleteRule="CASCADE" DeleteOnNull="true" />
+    </Type>
+  </Table>
+  <Table Name="dbo.OrderDeliveryRegions" Member="OrderDeliveryRegions">
+    <Type Name="OrderDeliveryRegion">
+      <Column Name="ID" Type="System.Int32" DbType="Int NOT NULL IDENTITY" IsPrimaryKey="true" IsDbGenerated="true" CanBeNull="false" />
+      <Column Name="Name" Type="System.String" DbType="NVarChar(300) NOT NULL" CanBeNull="false" />
+      <Column Name="ImportID" Type="System.Int32" DbType="Int" CanBeNull="true" />
+      <Column Name="DeliveryProviderID" Type="System.Int32" DbType="Int" CanBeNull="true" />
+      <Column Name="Price" Type="System.Decimal" DbType="Decimal(18,2) NOT NULL" CanBeNull="false" />
+      <Column Name="DeliveryTime" Type="System.Int32" DbType="Int NOT NULL" CanBeNull="false" />
+      <Column Name="RegionDistance" Type="System.Decimal" DbType="Decimal(18,2)" CanBeNull="true" />
+      <Column Name="DistanceZoneID" Type="System.Int32" DbType="Int" CanBeNull="true" />
+      <Column Name="WeightZoneID" Type="System.Int32" DbType="Int" CanBeNull="true" />
+      <Association Name="OrderDeliveryRegion_OrderDetail" Member="OrderDetails" ThisKey="ID" OtherKey="RegionID" Type="OrderDetail" />
+      <Association Name="OrderDeliveryZone_OrderDeliveryRegion" Member="OrderDeliveryDistanceZone" ThisKey="DistanceZoneID" OtherKey="ID" Type="OrderDeliveryZone" IsForeignKey="true" />
+      <Association Name="OrderDeliveryZone_OrderDeliveryRegion1" Member="OrderDeliveryWeightZone" ThisKey="WeightZoneID" OtherKey="ID" Type="OrderDeliveryZone" IsForeignKey="true" />
+      <Association Name="OrderDeliveryProvider_OrderDeliveryRegion" Member="OrderDeliveryProvider" ThisKey="DeliveryProviderID" OtherKey="ID" Type="OrderDeliveryProvider" IsForeignKey="true" DeleteRule="CASCADE" />
+    </Type>
+  </Table>
+  <Table Name="dbo.OrderDeliveryZones" Member="OrderDeliveryZones">
+    <Type Name="OrderDeliveryZone">
+      <Column Name="ID" Type="System.Int32" DbType="Int NOT NULL IDENTITY" IsPrimaryKey="true" IsDbGenerated="true" CanBeNull="false" />
+      <Column Name="Name" Type="System.String" DbType="NVarChar(512) NOT NULL" CanBeNull="false" />
+      <Column Name="IsWeightZone" Type="System.Boolean" DbType="Bit NOT NULL" CanBeNull="false" />
+      <Column Name="WeightThreshold" Type="System.Decimal" DbType="Decimal(18,2)" CanBeNull="true" />
+      <Column Name="AlternativeZone" Type="System.Int32" DbType="Int" CanBeNull="true" />
+      <Association Name="OrderDeliveryZone_OrderDeliveryRegion" Member="OrderDeliveryRegionsByDZone" ThisKey="ID" OtherKey="DistanceZoneID" Type="OrderDeliveryRegion" />
+      <Association Name="OrderDeliveryZone_OrderDeliveryRegion1" Member="OrderDeliveryRegionsByWZone" ThisKey="ID" OtherKey="WeightZoneID" Type="OrderDeliveryRegion" />
+      <Association Name="OrderDeliveryZone_OrderDeliveryZone" Member="AlternativeOrderDeliveryZones" Storage="_OrderDeliveryZones" ThisKey="ID" OtherKey="AlternativeZone" Type="OrderDeliveryZone" />
+      <Association Name="OrderDeliveryZone_OrderDeliveryZoneInterval" Member="OrderDeliveryZoneIntervals" ThisKey="ID" OtherKey="ZoneID" Type="OrderDeliveryZoneInterval" />
+      <Association Name="OrderDeliveryZone_OrderDeliveryZone" Member="AlternativeOrderDeliveryZone" Storage="_OrderDeliveryZone1" ThisKey="AlternativeZone" OtherKey="ID" Type="OrderDeliveryZone" IsForeignKey="true" />
+    </Type>
+  </Table>
+  <Table Name="dbo.OrderDeliveryZoneIntervals" Member="OrderDeliveryZoneIntervals">
+    <Type Name="OrderDeliveryZoneInterval">
+      <Column Name="ID" Type="System.Int32" DbType="Int NOT NULL IDENTITY" IsPrimaryKey="true" IsDbGenerated="true" CanBeNull="false" />
+      <Column Name="ZoneID" Type="System.Int32" DbType="Int NOT NULL" CanBeNull="false" />
+      <Column Name="MinInterval" Type="System.Decimal" DbType="Decimal(18,2) NOT NULL" CanBeNull="false" />
+      <Column Name="MaxInterval" Type="System.Decimal" DbType="Decimal(18,2) NOT NULL" CanBeNull="false" />
+      <Column Name="Cost" Type="System.Decimal" DbType="Decimal(18,2) NOT NULL" CanBeNull="false" />
+      <Column Name="WeightLimit" Type="System.Decimal" DbType="Decimal(18,2)" CanBeNull="true" />
+      <Column Name="OverWeightCost" Type="System.Decimal" DbType="Decimal(18,2)" CanBeNull="true" />
+      <Column Name="OverWeightUnit" Type="System.Decimal" DbType="Decimal(18,2)" CanBeNull="true" />
+      <Association Name="OrderDeliveryZone_OrderDeliveryZoneInterval" Member="OrderDeliveryZone" ThisKey="ZoneID" OtherKey="ID" Type="OrderDeliveryZone" IsForeignKey="true" DeleteRule="CASCADE" DeleteOnNull="true" />
+    </Type>
+  </Table>
+  <Table Name="dbo.BookSaleCatalog" Member="BookSaleCatalogs">
+    <Type Name="BookSaleCatalog">
+      <Column Name="ID" Type="System.Int32" DbType="Int NOT NULL IDENTITY" IsPrimaryKey="true" IsDbGenerated="true" CanBeNull="false" />
+      <Column Name="DescriptionID" Type="System.Int32" DbType="Int NOT NULL" CanBeNull="false" />
+      <Column Name="PartnerID" Type="System.Int32" DbType="Int NOT NULL" CanBeNull="false" />
+      <Column Name="PartnerPrice" Type="System.Decimal" DbType="Decimal(18,2) NOT NULL" CanBeNull="false" UpdateCheck="Never" />
+      <Column Name="IsNew" Type="System.Boolean" DbType="Bit NOT NULL" CanBeNull="false" />
+      <Column Name="IsSpec" Type="System.Boolean" DbType="Bit NOT NULL" CanBeNull="false" />
+      <Column Name="PartnerUID" Type="System.String" DbType="NVarChar(20) NOT NULL" CanBeNull="false" UpdateCheck="Never" />
+      <Column Name="Margin" Type="System.Decimal" DbType="Decimal(18,2) NOT NULL" CanBeNull="false" />
+      <Column Name="IsAvailable" Type="System.Boolean" DbType="Bit NOT NULL" CanBeNull="false" UpdateCheck="Never" />
+      <Column Name="LastUpdate" Type="System.DateTime" DbType="DateTime NOT NULL" CanBeNull="false" UpdateCheck="Never" />
+      <Column Name="IsTop" Type="System.Boolean" DbType="Bit NOT NULL" CanBeNull="false" />
+      <Column Name="PriceOverride" Type="System.Decimal" DbType="Decimal(18,2)" CanBeNull="true" />
+      <Association Name="BookSaleCatalog_BookPageRel" Member="BookPageRels" ThisKey="ID" OtherKey="SaleCatalogID" Type="BookPageRel" />
+      <Association Name="BookSaleCatalog_BooksOnMain" Member="BooksOnMains" ThisKey="ID" OtherKey="SaleCatalogID" Type="BooksOnMain" />
+      <Association Name="BookSaleCatalog_BookSpecOffer" Member="BookSpecOffers" ThisKey="ID" OtherKey="SaleCatalogID" Type="BookSpecOffer" />
+      <Association Name="BookSaleCatalog_ShopCartItem" Member="ShopCartItems" ThisKey="ID" OtherKey="SaleCatalogID" Type="ShopCartItem" />
+      <Association Name="Partner_BookSaleCatalog" Member="Partner" ThisKey="PartnerID" OtherKey="ID" Type="Partner" IsForeignKey="true" DeleteRule="CASCADE" DeleteOnNull="true" />
+      <Association Name="BookDescriptionCatalog_BookSaleCatalog" Member="BookDescriptionCatalog" ThisKey="DescriptionID" OtherKey="ID" Type="BookDescriptionCatalog" IsForeignKey="true" DeleteRule="CASCADE" DeleteOnNull="true" />
+    </Type>
+  </Table>
+  <Table Name="dbo.BookPublisherMargins" Member="BookPublisherMargins">
+    <Type Name="BookPublisherMargin">
+      <Column Name="ID" Type="System.Int32" DbType="Int NOT NULL IDENTITY" IsPrimaryKey="true" IsDbGenerated="true" CanBeNull="false" />
+      <Column Name="PartnerID" Type="System.Int32" DbType="Int NOT NULL" CanBeNull="false" />
+      <Column Name="PublisherID" Type="System.Int32" DbType="Int NOT NULL" CanBeNull="false" />
+      <Column Name="Margin" Type="System.Decimal" DbType="Decimal(18,2)" CanBeNull="true" />
+      <Column Name="Discount" Type="System.Decimal" DbType="Decimal(18,2)" CanBeNull="true" />
+      <Association Name="BookPublisher_BookPublisherMargin" Member="BookPublisher" ThisKey="PublisherID" OtherKey="ID" Type="BookPublisher" IsForeignKey="true" DeleteRule="CASCADE" DeleteOnNull="true" />
+      <Association Name="Partner_BookPublisherMargin" Member="Partner" ThisKey="PartnerID" OtherKey="ID" Type="Partner" IsForeignKey="true" DeleteRule="CASCADE" DeleteOnNull="true" />
+    </Type>
+  </Table>
+  <Table Name="dbo.PartnerImportSettings" Member="PartnerImportSettings">
+    <Type Name="PartnerImportSetting">
+      <Column Name="ID" Type="System.Int32" DbType="Int NOT NULL IDENTITY" IsPrimaryKey="true" IsDbGenerated="true" CanBeNull="false" />
+      <Column Name="PartnerID" Type="System.Int32" DbType="Int NOT NULL" CanBeNull="false" />
+      <Column Name="ImportSectionName" Type="System.String" DbType="NVarChar(400) NOT NULL" CanBeNull="false" />
+      <Column Name="PageID" Type="System.Int32" DbType="Int" CanBeNull="true" />
+      <Column Name="InList" Type="System.Boolean" DbType="Bit NOT NULL" CanBeNull="false" />
+      <Association Name="Partner_PartnerImportSetting" Member="Partner" ThisKey="PartnerID" OtherKey="ID" Type="Partner" IsForeignKey="true" DeleteRule="CASCADE" DeleteOnNull="true" />
+      <Association Name="CMSPage_PartnerImportSetting" Member="CMSPage" ThisKey="PageID" OtherKey="ID" Type="CMSPage" IsForeignKey="true" DeleteRule="CASCADE" />
+    </Type>
+  </Table>
+  <Table Name="dbo.vw_BookCount_Available" Member="BookAvailableCounters">
+    <Type Name="BookAvailableCounters">
+      <Column Name="ID" Type="System.Int32" DbType="Int NOT NULL" CanBeNull="false" />
+      <Column Name="URL" Type="System.String" DbType="NVarChar(400) NOT NULL" CanBeNull="false" />
+      <Column Name="BookCount" Type="System.Int32" DbType="Int" CanBeNull="true" />
+      <Column Name="ParentID" Type="System.Int32" DbType="Int" CanBeNull="true" />
+    </Type>
+  </Table>
+  <Table Name="dbo.vw_BookCount_Common" Member="BookCommonCounters">
+    <Type Name="BookCommonCounters">
+      <Column Name="ID" Type="System.Int32" DbType="Int NOT NULL" CanBeNull="false" />
+      <Column Name="URL" Type="System.String" DbType="NVarChar(400) NOT NULL" CanBeNull="false" />
+      <Column Name="BookCount" Type="System.Int32" DbType="Int" CanBeNull="true" />
+      <Column Name="ParentID" Type="System.Int32" DbType="Int" CanBeNull="true" />
+    </Type>
+  </Table>
+  <Table Name="dbo.BookDescriptionCatalog" Member="BookDescriptionCatalogs">
+    <Type Name="BookDescriptionCatalog">
+      <Column Name="ID" Type="System.Int32" DbType="Int NOT NULL IDENTITY" IsPrimaryKey="true" IsDbGenerated="true" CanBeNull="false" />
+      <Column Name="ProviderUID" Type="System.String" DbType="NVarChar(20) NOT NULL" CanBeNull="false" UpdateCheck="Never" />
+      <Column Name="ISBN" Type="System.String" DbType="NVarChar(20) NOT NULL" CanBeNull="false" />
+      <Column Name="Header" Type="System.String" DbType="NVarChar(400) NOT NULL" CanBeNull="false" />
+      <Column Name="Annotation" Type="System.String" DbType="NVarChar(MAX)" CanBeNull="true" />
+      <Column Name="CoverID" Type="System.Int32" DbType="Int" CanBeNull="true" />
+      <Column Name="DataSourceID" Type="System.Int32" DbType="Int NOT NULL" CanBeNull="false" UpdateCheck="Never" />
+      <Column Name="PublisherID" Type="System.Int32" DbType="Int" CanBeNull="true" />
+      <Column Name="PublishYear" Type="System.Int32" DbType="Int" CanBeNull="true" />
+      <Column Name="PageCount" Type="System.Int32" DbType="Int" CanBeNull="true" />
+      <Column Name="OriginalSectionPath" Type="System.String" DbType="NVarChar(400)" CanBeNull="true" />
+      <Column Name="BookType" Type="System.String" DbType="NVarChar(100)" CanBeNull="true" />
+      <Column Name="EAN" Type="System.Int64" DbType="BigInt" CanBeNull="true" />
+      <Column Name="TotalSum" Type="System.Int64" DbType="BigInt" CanBeNull="true" />
+      <Column Name="TotalCount" Type="System.Int32" DbType="Int" CanBeNull="true" />
+      <Column Name="Average" Type="System.Decimal" DbType="Decimal(6,3)" CanBeNull="true" />
+      <Association Name="BookDescriptionCatalog_BookAuthorsRel" Member="BookAuthorsRels" ThisKey="ID" OtherKey="BookDescriptionID" Type="BookAuthorsRel" />
+      <Association Name="BookDescriptionCatalog_BookTagRel" Member="BookTagRels" ThisKey="ID" OtherKey="DescriptionID" Type="BookTagRel" />
+      <Association Name="BookDescriptionCatalog_OrderedBook" Member="OrderedBooks" ThisKey="ID" OtherKey="BookDescriptionID" Type="OrderedBook" />
+      <Association Name="BookDescriptionCatalog_BookPrice" Member="BookPrices" ThisKey="ID" OtherKey="DescriptionID" Type="BookPrice" />
+      <Association Name="BookDescriptionCatalog_BookSaleCatalog" Member="BookSaleCatalogs" ThisKey="ID" OtherKey="DescriptionID" Type="BookSaleCatalog" />
+      <Association Name="BookDescriptionCatalog_BookDescriptionDataValue" Member="BookDescriptionDataValues" ThisKey="ID" OtherKey="DescriptionID" Type="BookDescriptionDataValue" />
+      <Association Name="BookDescriptionCatalog_BookComment" Member="BookComments" ThisKey="ID" OtherKey="DescriptionID" Type="BookComment" />
+      <Association Name="BookCover_BookDescriptionCatalog" Member="BookCover" ThisKey="CoverID" OtherKey="ID" Type="BookCover" IsForeignKey="true" DeleteRule="SET NULL" />
+      <Association Name="BookDescriptionProvider_BookDescriptionCatalog" Member="BookDescriptionProvider" ThisKey="DataSourceID" OtherKey="ID" Type="BookDescriptionProvider" IsForeignKey="true" />
+      <Association Name="BookPublisher_BookDescriptionCatalog" Member="BookPublisher" ThisKey="PublisherID" OtherKey="ID" Type="BookPublisher" IsForeignKey="true" />
+    </Type>
+  </Table>
+  <Table Name="dbo.SiteSettings" Member="SiteSettings">
+    <Type Name="SiteSetting">
+      <Column Name="ID" Type="System.Int32" DbType="Int NOT NULL IDENTITY" IsPrimaryKey="true" IsDbGenerated="true" CanBeNull="false" />
+      <Column Name="Setting" Type="System.String" DbType="NVarChar(512) NOT NULL" CanBeNull="false" />
+      <Column Name="Value" Type="System.String" DbType="NVarChar(MAX) NOT NULL" CanBeNull="false" />
+      <Column Name="Title" Type="System.String" DbType="NVarChar(512) NOT NULL" CanBeNull="false" />
+      <Column Name="OrderNum" Type="System.Int32" DbType="Int NOT NULL" CanBeNull="false" />
+      <Column Name="Editor" Type="System.String" DbType="NVarChar(50) NOT NULL" CanBeNull="false" />
+      <Column Name="ObjectType" Type="System.String" DbType="NVarChar(50)" CanBeNull="true" />
+      <Column Name="GroupName" Type="System.String" DbType="NVarChar(512) NOT NULL" CanBeNull="false" />
+    </Type>
+  </Table>
+  <Table Name="dbo.OrderPaymentProviders" Member="OrderPaymentProviders">
+    <Type Name="OrderPaymentProvider">
+      <Column Name="ID" Type="System.Int32" DbType="Int NOT NULL IDENTITY" IsPrimaryKey="true" IsDbGenerated="true" CanBeNull="false" />
+      <Column Name="Name" Type="System.String" DbType="NVarChar(500) NOT NULL" CanBeNull="false" />
+      <Column Name="SprinterUID" Type="System.Int32" DbType="Int NOT NULL" CanBeNull="false" />
+      <Column Name="Code" Type="System.String" DbType="NVarChar(10)" CanBeNull="true" />
+      <Association Name="OrderPaymentProvider_OrderPaymentDeliveryRel" Member="OrderPaymentDeliveryRels" ThisKey="ID" OtherKey="PaymentProviderID" Type="OrderPaymentDeliveryRel" />
+    </Type>
+  </Table>
+  <Table Name="dbo.OrderPaymentDeliveryRels" Member="OrderPaymentDeliveryRels">
+    <Type Name="OrderPaymentDeliveryRel">
+      <Column Name="ID" Type="System.Int32" DbType="Int NOT NULL IDENTITY" IsPrimaryKey="true" IsDbGenerated="true" CanBeNull="false" />
+      <Column Name="DeliveryProviderID" Type="System.Int32" DbType="Int NOT NULL" CanBeNull="false" />
+      <Column Name="PaymentProviderID" Type="System.Int32" DbType="Int NOT NULL" CanBeNull="false" />
+      <Association Name="OrderPaymentProvider_OrderPaymentDeliveryRel" Member="OrderPaymentProvider" ThisKey="PaymentProviderID" OtherKey="ID" Type="OrderPaymentProvider" IsForeignKey="true" DeleteRule="CASCADE" DeleteOnNull="true" />
+      <Association Name="OrderDeliveryProvider_OrderPaymentDeliveryRel" Member="OrderDeliveryProvider" ThisKey="DeliveryProviderID" OtherKey="ID" Type="OrderDeliveryProvider" IsForeignKey="true" DeleteRule="CASCADE" DeleteOnNull="true" />
+    </Type>
+  </Table>
+  <Table Name="dbo.Pages" Member="CMSPages">
+    <Type Name="CMSPage">
+      <Column Name="ID" Type="System.Int32" DbType="Int NOT NULL IDENTITY" IsPrimaryKey="true" IsDbGenerated="true" CanBeNull="false" />
+      <Column Name="PageName" Type="System.String" DbType="NVarChar(400) NOT NULL" CanBeNull="false" />
+      <Column Name="URL" Type="System.String" DbType="NVarChar(400) NOT NULL" CanBeNull="false" />
+      <Column Name="FullName" Type="System.String" DbType="NVarChar(1024) NOT NULL" CanBeNull="false" />
+      <Column Name="Title" Type="System.String" DbType="NVarChar(MAX)" CanBeNull="true" />
+      <Column Name="Keywords" Type="System.String" DbType="NVarChar(MAX)" CanBeNull="true" />
+      <Column Name="Description" Type="System.String" DbType="NVarChar(MAX)" CanBeNull="true" />
+      <Column Name="ParentID" Type="System.Int32" DbType="Int" CanBeNull="true" />
+      <Column Name="Visible" Type="System.Boolean" DbType="Bit NOT NULL" CanBeNull="false" />
+      <Column Name="Type" Type="System.Int32" DbType="Int NOT NULL" CanBeNull="false" />
+      <Column Name="OrderNum" Type="System.Int32" DbType="Int NOT NULL" CanBeNull="false" />
+      <Column Name="ViewMenu" Type="System.Boolean" DbType="Bit NOT NULL" CanBeNull="false" />
+      <Column Name="ImportID" Type="System.Int32" DbType="Int" CanBeNull="true" />
+      <Column Name="SystemData" Type="System.String" DbType="NVarChar(100)" CanBeNull="true" />
+      <Column Name="ActiveCount" Type="System.Int32" DbType="Int NOT NULL" CanBeNull="false" />
+      <Column Name="AllCount" Type="System.Int32" DbType="Int NOT NULL" CanBeNull="false" />
+      <Column Name="OriginalURL" Type="System.String" DbType="NVarChar(400)" CanBeNull="true" />
+      <Association Name="CMSPage_BookPageRel" Member="BookPageRels" ThisKey="ID" OtherKey="PageID" Type="BookPageRel" />
+      <Association Name="CMSPage_TagComplexFilter" Member="TagComplexFilters" ThisKey="ID" OtherKey="PageID" Type="TagComplexFilter" />
+      <Association Name="CMSPage_TagSimpleFilter" Member="TagSimpleFilters" ThisKey="ID" OtherKey="PageID" Type="TagSimpleFilter" />
+      <Association Name="CMSPage_PageTextData" Member="PageTextDatas" ThisKey="ID" OtherKey="PageID" Type="PageTextData" />
+      <Association Name="CMSPage_PartnerPriority" Member="PartnerPriorities" ThisKey="ID" OtherKey="PageID" Type="PartnerPriority" />
+      <Association Name="CMSPage_PartnerImportSetting" Member="PartnerImportSettings" ThisKey="ID" OtherKey="PageID" Type="PartnerImportSetting" />
+      <Association Name="CMSPage_CMSPage" Member="Children" ThisKey="ID" OtherKey="ParentID" Type="CMSPage" />
+      <Association Name="CMSPage_CMSPage" Member="ParentPage" ThisKey="ParentID" OtherKey="ID" Type="CMSPage" IsForeignKey="true" />
+      <Association Name="PageType_CMSPage" Member="PageType" ThisKey="Type" OtherKey="ID" Type="PageType" IsForeignKey="true" />
+    </Type>
+  </Table>
+  <Table Name="dbo.BookDescriptionDataKeys" Member="BookDescriptionDataKeys">
+    <Type Name="BookDescriptionDataKey">
+      <Column Name="ID" Type="System.Int32" DbType="Int NOT NULL IDENTITY" IsPrimaryKey="true" IsDbGenerated="true" CanBeNull="false" />
+      <Column Name="DataKey" Type="System.String" DbType="NVarChar(100) NOT NULL" CanBeNull="false" />
+      <Column Name="Description" Type="System.String" DbType="NVarChar(1000) NOT NULL" CanBeNull="false" />
+      <Association Name="BookDescriptionDataKey_BookDescriptionDataValue" Member="BookDescriptionDataValues" ThisKey="ID" OtherKey="DataKeyID" Type="BookDescriptionDataValue" />
+    </Type>
+  </Table>
+  <Table Name="dbo.BookDescriptionDataValues" Member="BookDescriptionDataValues">
+    <Type Name="BookDescriptionDataValue">
+      <Column Name="ID" Type="System.Int32" DbType="Int NOT NULL IDENTITY" IsPrimaryKey="true" IsDbGenerated="true" CanBeNull="false" />
+      <Column Name="DescriptionID" Type="System.Int32" DbType="Int NOT NULL" CanBeNull="false" />
+      <Column Name="DataKeyID" Type="System.Int32" DbType="Int NOT NULL" CanBeNull="false" />
+      <Column Name="DataValue" Type="System.String" DbType="NVarChar(400) NOT NULL" CanBeNull="false" />
+      <Association Name="BookDescriptionCatalog_BookDescriptionDataValue" Member="BookDescriptionCatalog" ThisKey="DescriptionID" OtherKey="ID" Type="BookDescriptionCatalog" IsForeignKey="true" DeleteRule="CASCADE" DeleteOnNull="true" />
+      <Association Name="BookDescriptionDataKey_BookDescriptionDataValue" Member="BookDescriptionDataKey" ThisKey="DataKeyID" OtherKey="ID" Type="BookDescriptionDataKey" IsForeignKey="true" DeleteRule="CASCADE" DeleteOnNull="true" />
+    </Type>
+  </Table>
+  <Table Name="dbo.BookComments" Member="BookComments">
+    <Type Name="BookComment">
+      <Column Name="ID" Type="System.Int32" DbType="Int NOT NULL IDENTITY" IsPrimaryKey="true" IsDbGenerated="true" CanBeNull="false" />
+      <Column Name="Date" Type="System.DateTime" DbType="DateTime NOT NULL" CanBeNull="false" />
+      <Column Name="Comment" Type="System.String" DbType="NVarChar(MAX) NOT NULL" CanBeNull="false" />
+      <Column Name="UserID" Type="System.Guid" DbType="UniqueIdentifier" CanBeNull="true" />
+      <Column Name="DescriptionID" Type="System.Int32" DbType="Int NOT NULL" CanBeNull="false" />
+      <Column Name="UserName" Type="System.String" DbType="NVarChar(400) NOT NULL" CanBeNull="false" />
+      <Column Name="UserMail" Type="System.String" DbType="NVarChar(400)" CanBeNull="true" />
+      <Column Name="Approved" Type="System.Boolean" DbType="Bit NOT NULL" CanBeNull="false" />
+      <Column Name="ImportID" Type="System.Int32" DbType="Int" CanBeNull="true" />
+      <Association Name="User_BookComment" Member="User" ThisKey="UserID" OtherKey="UserId" Type="User" IsForeignKey="true" DeleteRule="SET NULL" />
+      <Association Name="BookDescriptionCatalog_BookComment" Member="BookDescriptionCatalog" ThisKey="DescriptionID" OtherKey="ID" Type="BookDescriptionCatalog" IsForeignKey="true" DeleteRule="CASCADE" DeleteOnNull="true" />
+    </Type>
+  </Table>
+  <Table Name="dbo.MailingReplacements" Member="MailingReplacements">
+    <Type Name="MailingReplacement">
+      <Column Name="ID" Type="System.Int32" DbType="Int NOT NULL IDENTITY" IsPrimaryKey="true" IsDbGenerated="true" CanBeNull="false" />
+      <Column Name="Replacement" Type="System.String" DbType="NVarChar(100) NOT NULL" CanBeNull="false" />
+      <Column Name="Description" Type="System.String" DbType="NVarChar(400) NOT NULL" CanBeNull="false" />
+      <Column Name="MailingID" Type="System.Int32" DbType="Int NOT NULL" CanBeNull="false" />
+      <Association Name="MailingList_MailingReplacement" Member="MailingList" ThisKey="MailingID" OtherKey="ID" Type="MailingList" IsForeignKey="true" DeleteRule="CASCADE" DeleteOnNull="true" />
+    </Type>
+  </Table>
+  <Table Name="dbo.MailingList" Member="MailingLists">
+    <Type Name="MailingList">
+      <Column Name="ID" Type="System.Int32" DbType="Int NOT NULL IDENTITY" IsPrimaryKey="true" IsDbGenerated="true" CanBeNull="false" />
+      <Column Name="Header" Type="System.String" DbType="NVarChar(MAX) NOT NULL" CanBeNull="false" />
+      <Column Name="Letter" Type="System.String" DbType="NVarChar(MAX) NOT NULL" CanBeNull="false" />
+      <Column Name="LetterKey" Type="System.String" DbType="NVarChar(50) NOT NULL" CanBeNull="false" />
+      <Column Name="Name" Type="System.String" DbType="NVarChar(400) NOT NULL" CanBeNull="false" />
+      <Column Name="IsForAdmin" Type="System.Boolean" DbType="Bit NOT NULL" CanBeNull="false" />
+      <Column Name="TargetMail" Type="System.String" DbType="NVarChar(1000)" CanBeNull="true" />
+      <Association Name="MailingList_MailingReplacement" Member="MailingReplacements" ThisKey="ID" OtherKey="MailingID" Type="MailingReplacement" />
+    </Type>
+  </Table>
+  <Table Name="dbo.OrderDeliveryProviders" Member="OrderDeliveryProviders">
+    <Type Name="OrderDeliveryProvider">
+      <Column Name="ID" Type="System.Int32" DbType="Int NOT NULL IDENTITY" IsPrimaryKey="true" IsDbGenerated="true" CanBeNull="false" />
+      <Column Name="Name" Type="System.String" DbType="NVarChar(100) NOT NULL" CanBeNull="false" />
+      <Column Name="UID" Type="System.String" DbType="NVarChar(50) NOT NULL" CanBeNull="false" />
+      <Column Name="OrderNum" Type="System.Int32" DbType="Int NOT NULL" CanBeNull="false" />
+      <Column Name="GroupID" Type="System.Int32" DbType="Int NOT NULL" CanBeNull="false" />
+      <Column Name="ShowAdress" Type="System.Boolean" DbType="Bit NOT NULL" CanBeNull="false" />
+      <Column Name="ShowTime" Type="System.Boolean" DbType="Bit NOT NULL" CanBeNull="false" />
+      <Column Name="ShowTown" Type="System.Boolean" DbType="Bit NOT NULL" CanBeNull="false" />
+      <Column Name="ShowRegions" Type="System.Boolean" DbType="Bit NOT NULL" CanBeNull="false" />
+      <Column Name="ShowOrgData" Type="System.Boolean" DbType="Bit NOT NULL" CanBeNull="false" />
+      <Column Name="ListType" Type="System.String" DbType="NVarChar(50)" CanBeNull="true" />
+      <Column Name="DefaultCity" Type="System.String" DbType="NVarChar(50)" CanBeNull="true" />
+      <Column Name="ShowIndex" Type="System.Boolean" DbType="Bit NOT NULL" CanBeNull="false" />
+      <Column Name="SprinterID" Type="System.Int32" DbType="Int NOT NULL" CanBeNull="false" />
+      <Column Name="DiscountThreshold" Type="System.Decimal" DbType="Decimal(18,2)" CanBeNull="true" />
+      <Association Name="OrderDeliveryProvider_OrderDeliveryRegion" Member="OrderDeliveryRegions" ThisKey="ID" OtherKey="DeliveryProviderID" Type="OrderDeliveryRegion" />
+      <Association Name="OrderDeliveryProvider_OrderPaymentDeliveryRel" Member="OrderPaymentDeliveryRels" ThisKey="ID" OtherKey="DeliveryProviderID" Type="OrderPaymentDeliveryRel" />
+      <Association Name="OrderDeliveryGroup_OrderDeliveryProvider" Member="OrderDeliveryGroup" ThisKey="GroupID" OtherKey="ID" Type="OrderDeliveryGroup" IsForeignKey="true" DeleteRule="CASCADE" DeleteOnNull="true" />
+    </Type>
+  </Table>
+  <Table Name="dbo.BookSpecOffers" Member="BookSpecOffers">
+    <Type Name="BookSpecOffer">
+      <Column Name="ID" Type="System.Int32" DbType="Int NOT NULL IDENTITY" IsPrimaryKey="true" IsDbGenerated="true" CanBeNull="false" />
+      <Column Name="SaleCatalogID" Type="System.Int32" DbType="Int NOT NULL" CanBeNull="false" />
+      <Column Name="SpecPrice" Type="System.Decimal" DbType="Decimal(18,2) NOT NULL" CanBeNull="false" />
+      <Column Name="MinPrice" Type="System.Decimal" DbType="Decimal(18,2) NOT NULL" CanBeNull="false" />
+      <Association Name="BookSaleCatalog_BookSpecOffer" Member="BookSaleCatalog" ThisKey="SaleCatalogID" OtherKey="ID" Type="BookSaleCatalog" IsForeignKey="true" DeleteRule="CASCADE" DeleteOnNull="true" />
+    </Type>
+  </Table>
+  <Table Name="dbo.ShopCartItems" Member="ShopCartItems">
+    <Type Name="ShopCartItem">
+      <Column Name="ID" Type="System.Int32" DbType="Int NOT NULL IDENTITY" IsPrimaryKey="true" IsDbGenerated="true" CanBeNull="false" />
+      <Column Name="SaleCatalogID" Type="System.Int32" DbType="Int NOT NULL" CanBeNull="false" />
+      <Column Name="Count" Type="System.Int32" DbType="Int NOT NULL" CanBeNull="false" />
+      <Column Name="IsDelayed" Type="System.Boolean" DbType="Bit NOT NULL" CanBeNull="false" />
+      <Column Name="ShopCartID" Type="System.Int32" DbType="Int NOT NULL" CanBeNull="false" />
+      <Column Name="IsSpec" Type="System.Boolean" DbType="Bit NOT NULL" CanBeNull="false" />
+      <Association Name="BookSaleCatalog_ShopCartItem" Member="BookSaleCatalog" ThisKey="SaleCatalogID" OtherKey="ID" Type="BookSaleCatalog" IsForeignKey="true" DeleteRule="CASCADE" DeleteOnNull="true" />
+      <Association Name="ShopCart_ShopCartItem" Member="ShopCart" ThisKey="ShopCartID" OtherKey="ID" Type="ShopCart" IsForeignKey="true" DeleteRule="CASCADE" DeleteOnNull="true" />
+    </Type>
+  </Table>
+  <Table Name="dbo.UserProfiles" Member="UserProfiles">
+    <Type Name="UserProfile">
+      <Column Name="UserID" Type="System.Guid" DbType="UniqueIdentifier NOT NULL" IsPrimaryKey="true" CanBeNull="false" />
+      <Column Name="Name" Type="System.String" DbType="NVarChar(100) NOT NULL" CanBeNull="false" />
+      <Column Name="Surname" Type="System.String" DbType="NVarChar(100)" CanBeNull="true" />
+      <Column Name="Patrinomic" Type="System.String" DbType="NVarChar(100)" CanBeNull="true" />
+      <Column Name="FromIP" Type="System.Int32" DbType="Int" CanBeNull="true" />
+      <Column Name="RegDate" Type="System.DateTime" DbType="DateTime" CanBeNull="true" />
+      <Column Name="HomePhone" Type="System.String" DbType="NVarChar(150)" CanBeNull="true" />
+      <Column Name="MobilePhone" Type="System.String" DbType="NVarChar(150)" CanBeNull="true" />
+      <Column Name="Region" Type="System.String" DbType="NVarChar(200)" CanBeNull="true" />
+      <Column Name="Address" Type="System.String" DbType="NVarChar(1000)" CanBeNull="true" />
+      <Column Name="Floor" Type="System.String" DbType="NVarChar(200)" CanBeNull="true" />
+      <Column Name="Metro" Type="System.String" DbType="NVarChar(200)" CanBeNull="true" />
+      <Column Name="ImportUID" Type="System.String" DbType="NVarChar(50)" CanBeNull="true" />
+      <Column Name="SecImportUID" Type="System.String" DbType="NVarChar(50)" CanBeNull="true" />
+      <Column Name="Town" Type="System.String" DbType="NVarChar(100)" CanBeNull="true" />
+      <Column Name="Street" Type="System.String" DbType="NVarChar(100)" CanBeNull="true" />
+      <Column Name="House" Type="System.String" DbType="NVarChar(20)" CanBeNull="true" />
+      <Column Name="Building" Type="System.String" DbType="NVarChar(20)" CanBeNull="true" />
+      <Column Name="Doorway" Type="System.String" DbType="NVarChar(20)" CanBeNull="true" />
+      <Column Name="Flat" Type="System.String" DbType="NVarChar(20)" CanBeNull="true" />
+      <Column Name="ZipCode" Type="System.String" DbType="NVarChar(50)" CanBeNull="true" />
+      <Column Name="OrgName" Type="System.String" DbType="NVarChar(200)" CanBeNull="true" />
+      <Column Name="OrgINN" Type="System.String" DbType="NVarChar(50)" CanBeNull="true" />
+      <Column Name="OrgKPP" Type="System.String" DbType="NVarChar(50)" CanBeNull="true" />
+      <Column Name="OrgKS" Type="System.String" DbType="NVarChar(50)" CanBeNull="true" />
+      <Column Name="OrgRS" Type="System.String" DbType="NVarChar(50)" CanBeNull="true" />
+      <Column Name="OrgBank" Type="System.String" DbType="NVarChar(50)" CanBeNull="true" />
+      <Column Name="OrgBik" Type="System.String" DbType="NVarChar(50)" CanBeNull="true" />
+      <Column Name="OrgJurAddr" Type="System.String" DbType="NVarChar(300)" CanBeNull="true" />
+      <Column Name="OrgFactAddr" Type="System.String" DbType="NVarChar(300)" CanBeNull="true" />
+      <Column Name="OrgDirector" Type="System.String" DbType="NVarChar(300)" CanBeNull="true" />
+      <Column Name="OrgAccountant" Type="System.String" DbType="NVarChar(300)" CanBeNull="true" />
+      <Column Name="NotifyMail" Type="System.String" DbType="NVarChar(400)" CanBeNull="true" />
+      <Column Name="NeedMailNotify" Type="System.Boolean" DbType="Bit" CanBeNull="true" />
+      <Column Name="NotifyPhone" Type="System.String" DbType="NVarChar(150)" CanBeNull="true" />
+      <Column Name="NeedPhoneNotify" Type="System.Boolean" DbType="Bit" CanBeNull="true" />
+      <Association Name="User_UserProfile" Member="User" ThisKey="UserID" OtherKey="UserId" Type="User" IsForeignKey="true" DeleteRule="CASCADE" DeleteOnNull="true" />
+    </Type>
+  </Table>
+  <Table Name="dbo.OrderComments" Member="OrderComments">
+    <Type Name="OrderComment">
+      <Column Name="ID" Type="System.Int32" DbType="Int NOT NULL IDENTITY" IsPrimaryKey="true" IsDbGenerated="true" CanBeNull="false" />
+      <Column Name="Date" Type="System.DateTime" DbType="DateTime NOT NULL" CanBeNull="false" />
+      <Column Name="Comment" Type="System.String" DbType="NVarChar(MAX) NOT NULL" CanBeNull="false" />
+      <Column Name="OrderID" Type="System.Int32" DbType="Int NOT NULL" CanBeNull="false" />
+      <Column Name="Author" Type="System.String" DbType="NVarChar(500)" CanBeNull="true" />
+      <Association Name="Order_OrderComment" Member="Order" ThisKey="OrderID" OtherKey="ID" Type="Order" IsForeignKey="true" DeleteRule="CASCADE" DeleteOnNull="true" />
+    </Type>
+  </Table>
+  <Function Name="dbo.getSimilarBooks" Method="getSimilarBooks" IsComposable="true">
+    <Parameter Name="BookID" Parameter="bookID" Type="System.Int32" DbType="Int" />
+    <Parameter Name="BookCount" Parameter="bookCount" Type="System.Int32" DbType="Int" />
+    <Parameter Name="IsAvail" Parameter="isAvail" Type="System.Int32" DbType="Int" />
+    <ElementType Name="getSimilarBooksResult">
+      <Column Name="ID" Type="System.Int32" DbType="Int" CanBeNull="true" />
+      <Column Name="Rating" Type="System.Int32" DbType="Int" CanBeNull="true" />
+    </ElementType>
+  </Function>
+  <Function Name="dbo.getSectionList" Method="getSectionList" IsComposable="true">
+    <Parameter Name="AvailOnly" Parameter="availOnly" Type="System.Int32" DbType="Int" />
+    <ElementType Name="getSectionListResult">
+      <Column Name="ID" Type="System.Int32" DbType="Int" CanBeNull="true" />
+      <Column Name="URL" Type="System.String" DbType="NVarChar(400)" CanBeNull="true" />
+      <Column Name="ParentID" Type="System.Int32" DbType="Int" CanBeNull="true" />
+      <Column Name="BookTotalCount" Type="System.Int32" DbType="Int" CanBeNull="true" />
+      <Column Name="FullURL" Type="System.String" DbType="NVarChar(MAX)" CanBeNull="true" />
+      <Column Name="SectionCount" Type="System.Int32" DbType="Int" CanBeNull="true" />
+    </ElementType>
+  </Function>
+  <Function Name="dbo.spUpdateCounterInBranch" Method="spUpdateCounterInBranch">
+    <Parameter Name="childPage" Type="System.Int32" DbType="Int" />
+    <Return Type="System.Int32" />
+  </Function>
+  <Function Name="dbo.getIntListByJoinedString" Method="getIntListByJoinedString" IsComposable="true">
+    <Parameter Name="RowData" Parameter="rowData" Type="System.String" DbType="NVarChar(MAX)" />
+    <Parameter Name="SplitOn" Parameter="splitOn" Type="System.String" DbType="NVarChar(5)" />
+    <ElementType Name="getIntListByJoinedStringResult">
+      <Column Name="ID" Type="System.Int32" DbType="Int" CanBeNull="true" />
+    </ElementType>
+  </Function>
+  <Function Name="dbo.getBooksByAnnotation" Method="getBooksByAnnotation" IsComposable="true">
+    <Parameter Name="Text" Parameter="text" Type="System.String" DbType="NVarChar(500)" />
+    <Parameter Name="IsAvail" Parameter="isAvail" Type="System.Int32" DbType="Int" />
+    <Parameter Name="SearchType" Parameter="searchType" Type="System.Int32" DbType="Int" />
+    <ElementType Name="getBooksByAnnotationResult">
+      <Column Name="ID" Type="System.Int32" DbType="Int" CanBeNull="true" />
+      <Column Name="Rank" Type="System.Int32" DbType="Int" CanBeNull="true" />
+    </ElementType>
+  </Function>
+  <Function Name="dbo.getPageList" Method="getPageList" IsComposable="true">
+    <Parameter Name="parentURL" Type="System.String" DbType="NVarChar(400)" />
+    <ElementType Name="getPageListResult">
+      <Column Name="ID" Type="System.Int32" DbType="Int" CanBeNull="true" />
+      <Column Name="PageName" Type="System.String" DbType="NVarChar(400)" CanBeNull="true" />
+      <Column Name="URL" Type="System.String" DbType="NVarChar(400)" CanBeNull="true" />
+      <Column Name="FullName" Type="System.String" DbType="NVarChar(1024)" CanBeNull="true" />
+      <Column Name="ParentID" Type="System.Int32" DbType="Int" CanBeNull="true" />
+      <Column Name="Visible" Type="System.Boolean" DbType="Bit" CanBeNull="true" />
+      <Column Name="ViewMenu" Type="System.Boolean" DbType="Bit" CanBeNull="true" />
+      <Column Name="TreeLevel" Type="System.Int32" DbType="Int" CanBeNull="true" />
+      <Column Name="Type" Type="System.Int32" DbType="Int" CanBeNull="true" />
+      <Column Name="FullURL" Type="System.String" DbType="NVarChar(MAX)" CanBeNull="true" />
+      <Column Name="OrderNum" Type="System.Int32" DbType="Int" CanBeNull="true" />
+      <Column Name="BreadCrumbs" Type="System.String" DbType="NVarChar(MAX)" CanBeNull="true" />
+      <Column Name="LinkedBreadCrumbs" Type="System.String" DbType="NVarChar(MAX)" CanBeNull="true" />
+      <Column Name="ActiveCount" Type="System.Int32" DbType="Int" CanBeNull="true" />
+      <Column Name="AllCount" Type="System.Int32" DbType="Int" CanBeNull="true" />
+      <Column Name="OriginalURL" Type="System.String" DbType="NVarChar(400)" CanBeNull="true" />
+    </ElementType>
+  </Function>
+</Database>

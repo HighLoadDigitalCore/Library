@@ -1,0 +1,62 @@
+﻿@model ShopCart
+<div class="content-block">
+    <table class="mail-form">
+        <tr>
+            <td colspan="3" style="text-align: center"><b style="color: orangered;" id="messageCell"></b></td>
+        </tr>
+        @if (Model.AuthType == 1)
+        {
+
+            <tr>
+                <td><span>Ваш адрес электронной почты:</span></td>
+                <td>
+                    @Html.TextBox("UserMail", Model.UserMail)
+                </td>
+                <td>@*<a href="#">Забыли адрес электронной почты?</a>*@</td>
+            </tr>
+        }
+        <tr>
+            <td></td>
+            <td>
+                <label>
+                    @Html.RadioButton("AuthType", 1, Model.AuthType == 1)
+                    <strong>Я никогда не покупал на sprinter.ru</strong><br>
+                    &nbsp;&nbsp;&nbsp;&nbsp;Сейчас мы зарегестрируем вас, это не долго
+                </label>
+            </td>
+            <td></td>
+        </tr>
+        <tr>
+            <td></td>
+            <td>
+                <label>
+                    @Html.RadioButton("AuthType", 2, Model.AuthType == 2)
+                    <strong>Я уже покупал здесь, у меня есть пароль</strong>
+                </label>
+            </td>
+            <td></td>
+        </tr>
+        @if (Model.AuthType == 2)
+        {
+            <tr>
+                <td><span>Ваш адрес электронной почты:</span></td>
+                <td>
+                    @Html.TextBox("UserMail", Model.UserMail)
+                </td>
+                <td>@*<a href="#">Забыли адрес электронной почты?</a>*@</td>
+            </tr>
+            <tr>
+                <td><span>Пароль:</span></td>
+                <td>
+                    @Html.Password("UserPass", Model.UserPass)
+                </td>
+                <td><a href="#" id="PassRemember">Забыли пароль?</a></td>
+            </tr>
+        }
+    </table>
+</div>
+<div class="tab-bottom bsk">
+    <a class="left" href="/order" rel="auto-save">Назад к корзине</a>
+    <a class="right" href="/order?step=@(Request.QueryString["fastorder"].IsFilled() ? Model.MaxAvailableStepForAuth.ToString() : "2")" rel="auto-save" arg="auth">Продолжить</a>
+</div>
+@Html.Action("RestorePass", "Forms")

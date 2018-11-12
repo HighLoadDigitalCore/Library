@@ -1,0 +1,119 @@
+﻿@model ShopCart
+<div class="personal-information">
+    @if (!Model.SelectedProvider.ShowOrgData)
+    {
+        <b>Уважаемый посетитель, будьте внимательны в заполнении формы оформления заказа. Поля заполняются латинскими буквами!</b>
+    }
+    <div class="left-column">
+        <div><b id="messageCell" style="color: orangered"></b></div>
+        <h3>Персональная информация</h3>
+        <label for="UserFirstName">Имя*:@Html.TextBox("UserFirstName", Model.GetField<string>("UserFirstName"), new { required = 1 })</label>
+        <label for="UserSurname">Фамилия*:@Html.TextBox("UserSurname", Model.GetField<string>("UserSurname"), new { required = 1 })</label>
+        <label for="UserSecName">Отчество:@Html.TextBox("UserSecName", Model.GetField<string>("UserSecName"))</label>
+        <label for="UserPhone">Телефон*:@Html.TextBox("UserPhone", Model.GetField<string>("UserPhone"), new { required = 1 })</label>
+        <label for="UserMobile">Мобильный:@Html.TextBox("UserMobile", Model.GetField<string>("UserMobile"))</label>
+        @if (Model.SelectedProvider.ShowOrgData)
+        {
+            <label><a href="#" rel="auto-save" id="orgSwitcher" tval="@(Model.GetField<bool>("ShowOrg") ? "False" : "True")">@(Model.GetField<bool>("ShowOrg") ? "Оформление для физических лиц" : "Оформление для юридических лиц")</a></label>
+        }
+        <label></label>
+        @if (Model.SelectedProvider.ShowAdress)
+        {
+            <h3>Адрес доставки
+                @if (!Model.SelectedProvider.DefaultCity.IsNullOrEmpty())
+                {
+                    @Html.Raw("({0})".FormatWith(Model.SelectedProvider.DefaultCity))
+                }
+            </h3>
+                if (Model.SelectedProvider.ShowIndex)
+                {
+            <label for="DeliveryIndex">Индекс*:@Html.TextBox("DeliveryIndex", Model.GetField<string>("DeliveryIndex"), new { required = 1 })</label>
+                }
+                if (Model.SelectedProvider.ShowTown)
+                {
+            <label for="DeliveryTown">Город*:@Html.TextBox("DeliveryTown", Model.GetField<string>("DeliveryTown"), new { required = 1 })</label>
+                }
+            <label for="DeliveryStreet">Улица*:@Html.TextBox("DeliveryStreet", Model.GetField<string>("DeliveryStreet"), new { required = 1 })</label>
+            <label for="DeliveryHouse">Дом*:@Html.TextBox("DeliveryHouse", Model.GetField<string>("DeliveryHouse"), new { required = 1 })</label>
+            <label for="DeliveryFlat">Квартира/офис*:@Html.TextBox("DeliveryFlat", Model.GetField<string>("DeliveryFlat"), new { required = 1 })</label>
+            <label for="DeliverySection">Корпус:@Html.TextBox("DeliverySection", Model.GetField<string>("DeliverySection"))</label>
+                if (Model.SelectedProvider.ShowTime)
+                {
+            <label for="DeliveryDoorway">Подъезд:@Html.TextBox("DeliveryDoorway", Model.GetField<string>("DeliveryDoorway"))</label>
+            <label for="DeliveryFloor">Этаж:@Html.TextBox("DeliveryFloor", Model.GetField<string>("DeliveryFloor"))</label>
+                }
+        }
+        @if (Model.SelectedProvider.OrderPaymentDeliveryRels.Any())
+        {
+            <h3>Споcоб оплаты</h3>
+            foreach (var payment in Model.SelectedProvider.OrderPaymentDeliveryRels.Select(x => x.OrderPaymentProvider))
+            {
+            <label>
+                <input type="radio" value="@payment.ID" name="DeliveryPayment" /><span>@payment.Name</span>
+            </label>
+            }
+            @Html.Hidden("DeliveryPayment", Model.SelectedPayment.ID == 0 ? Model.SelectedProvider.OrderPaymentDeliveryRels.First().PaymentProviderID : Model.SelectedPayment.ID)
+        }
+    </div>
+    <div class="right-column">
+        @if (Model.FirstTime && !Model.GetField<bool>("ShowOrg"))
+        {
+            <div class="gray-block">
+                <span>Вы вошли используя e-mail <a href="javascript:void(0);">@Model.UserMail</a></span>
+                <p>Вы только что зарегистрировались, пока мы мало что знаем о вас. </p>
+                <p>Заполните информацию о себе, адрес доставки и другие персональные данные, это потребуется только один раз.</p>
+            </div>
+        }
+        else if (Model.GetField<bool>("ShowOrg"))
+        {
+            <div class="left-column">
+                <h3>Информация для юридических лиц</h3>
+                <label style="font-size: 11px; font-weight: bold; color: orangered">Все поля обязательны</label>
+                <label for="OrgName">Название:@Html.TextBox("OrgName", Model.GetField<string>("OrgName"), new { required = 1 })</label>
+                <label for="OrgINN">ИНН:@Html.TextBox("OrgINN", Model.GetField<string>("OrgINN"), new { required = 1 })</label>
+                <label for="OrgKPP">КПП:@Html.TextBox("OrgKPP", Model.GetField<string>("OrgKPP"), new { required = 1 })</label>
+                <label for="OrgKS">К/с:@Html.TextBox("OrgKS", Model.GetField<string>("OrgKS"), new { required = 1 })</label>
+                <label for="OrgRS">Р/с:@Html.TextBox("OrgRS", Model.GetField<string>("OrgRS"), new { required = 1 })</label>
+                <label for="OrgBank">Банк:@Html.TextBox("OrgBank", Model.GetField<string>("OrgBank"), new { required = 1 })</label>
+                <label for="OrgBik">БИК:@Html.TextBox("OrgBik", Model.GetField<string>("OrgBik"), new { required = 1 })</label>
+                <label for="OrgJurAddr">Адрес юр.:@Html.TextBox("OrgJurAddr", Model.GetField<string>("OrgJurAddr"), new { required = 1 })</label>
+                <label for="OrgFactAddr">Адрес факт.:@Html.TextBox("OrgFactAddr", Model.GetField<string>("OrgFactAddr"), new { required = 1 })</label>
+                <label for="OrgDirector">Генеральный дир.:@Html.TextBox("OrgDirector", Model.GetField<string>("OrgDirector"), new { required = 1 })</label>
+                <label for="OrgAccountant">Главный бух.:@Html.TextBox("OrgAccountant", Model.GetField<string>("OrgAccountant"), new { required = 1 })</label>
+            </div>
+        }
+        <div class="mcad">
+            @if (Model.SelectedProvider.ShowRegions)
+            {
+                <label for="UserRegion">
+                    Выберите @(Model.SelectedProvider.SelectListText):
+                    @Html.DropDownList("DeliveryRegion", Model.SelectedProvider.RegionListWithoutDefault, new { @class = "mcad-sel1" })
+                </label>
+            }
+            @if (Model.SelectedProvider.ShowTime)
+            {
+                <label for="DeliveryTime">
+                    Удобное время доставки:
+                    @Html.DropDownList("DeliveryTime", Model.SelectedProvider.TimeList, new { @class = "mcad-sel2" })
+                </label>
+                <label for="DeliveryComment">
+                    Комментарии для службы доставки
+                    @Html.TextArea("DeliveryComment", Model.GetField<string>("DeliveryComment"))
+                </label>
+
+            }
+        </div>
+        @*   <div class="gray-block">
+            <h3>Предоплата</h3>
+            <p>Внося предоплату, вы даёте нам понять серьёзность вашего заказа, поэтому он будет обработан в первую очередь. </p>
+            <p>Предоплата всего 10% от суммы заказа позволяет ускорить формирование заказа и передачу его на доставку или в пункт самовывоза.</p>
+            <a class="bring" href="#">Внести предоплату</a>
+        </div>*@
+    </div>
+    @Html.Hidden("PersonalCorrect", Model.GetField<bool>("PersonalCorrect"))
+</div>
+<div class="tab-bottom bsk">
+
+    <a class="left" href="/order?step=2" rel="auto-save">Вернуться</a>
+    <a class="right" href="/order?step=4" rel="auto-save" message="Необходимо заполнить все поля, отмеченные звездочкой" arg="check-text">Продолжить</a>
+</div>

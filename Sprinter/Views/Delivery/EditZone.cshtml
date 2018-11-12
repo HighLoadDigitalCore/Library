@@ -1,0 +1,59 @@
+﻿@model OrderDeliveryZone
+@{
+    ViewBag.Title = "Редактирование тарифного плана";
+    Layout = "~/Views/Shared/_Master.cshtml";
+}
+
+<h2>Редактирование тарифного плана</h2>
+@using (Html.BeginForm())
+{
+    @Html.ValidationSummary(true)
+
+    <fieldset>
+        @Html.HiddenFor(model => model.ID)
+
+        <div class="editor-label">
+            @Html.LabelFor(model => model.Name)
+        </div>
+        <div class="editor-field">
+            @Html.EditorFor(model => model.Name)
+            @Html.ValidationMessageFor(model => model.Name)
+        </div>
+
+        <div class="editor-label">
+            @Html.LabelFor(model => model.IsWeightZone)
+        </div>
+        <div class="editor-field">
+            @Html.EditorFor(model => model.IsWeightZone)
+            @Html.ValidationMessageFor(model => model.IsWeightZone)
+        </div>
+
+        <div class="editor-label">
+            @Html.LabelFor(model => model.WeightThreshold)
+        </div>
+        <div class="editor-field">
+            @Html.EditorFor(model => model.WeightThreshold)
+            @Html.ValidationMessageFor(model => model.WeightThreshold)
+        </div>
+
+        <div class="editor-label">
+            @Html.LabelFor(model => model.AlternativeZone)
+        </div>
+        <div class="editor-field">
+            @Html.DropDownList("AlternativeZone", Model.AlternativeZoneList)
+            @*@Html.ValidationMessageFor(model => model.DistanceZoneID)*@
+        </div>
+       
+        <p>
+            <input type="submit" value="Сохранить" />
+        </p>
+    </fieldset>
+}
+
+<div class="backref">
+    @Html.ActionLinkQuery("Назад к списку", "ZoneList", "Delivery")
+</div>
+
+@section scripts {
+    @Scripts.Render("~/bundles/jqueryval")
+}

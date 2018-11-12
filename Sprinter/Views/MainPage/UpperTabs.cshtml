@@ -1,0 +1,89 @@
+﻿<ul class="menu_line" id="switcher_upper" savename="switcher_on_main_upper">
+    <li class="ml_link"><a class="ml_link" num="0" href="@Url.Action("BooksBlock", new { type = 1 })">Бестселлеры</a></li>
+    <li class="ml_link"><a class="ml_link" num="1" href="@Url.Action("BooksBlock", new { type = 2 })">Популярные Спринт-тэги</a></li>
+    <li class="ml_link"><a class="ml_link" num="2" href="@Url.Action("BooksBlock", new { type = 0 })">Новинки</a></li>
+    <li class="ml_link"><a class="ml_link" num="3" href="@Url.Action("BooksBlock", new { type = 3 })">Распродажа</a></li>
+</ul>
+<div class="item">
+    <div id="ajax-content" savename="switcher_on_main_upper">
+    </div>
+    @if (ViewBag.First is BookSaleCatalog)
+    {
+
+        var first = ViewBag.First as BookSaleCatalog;
+        <div class="big_book" style="display: none">
+            <a href="@first.URL">
+                <img width="229" src="@first.CoverURL" /></a>
+            <div class="bb_info">
+                <h3>
+                    @Html.Raw(first.BookDescriptionCatalog.Header)</h3>
+                @if (first.BookDescriptionCatalog.BookAuthorsRels.Any())
+                {
+                    foreach (var author in first.BookDescriptionCatalog.BookAuthorsRels)
+                    {
+                    <a class="author_name" href="#">@author.Author.FIO</a>        
+                    }
+                }
+                else
+                {
+                    <a class="author_name" href=""></a>        
+                }
+                <p>
+                    @Html.Raw(first.BookDescriptionCatalog.Annotation.TruncateToPoint(150))
+                </p>
+                <span class="bb_price"><a href="#">@first.PriceForClient</a> руб.</span> <a rel="to-cart" arg="@first.ID" class="in_basket"
+                    href="#">
+                    @if (ShopCart.InitCart().ActiveBooks.Any(x => x.BookSaleCatalog.ID == first.ID))
+                    {
+                        <span class="already-in">Уже в корзине</span>
+                    }</a>
+            </div>
+        </div>
+    }
+</div>
+@if (ViewBag.Second is BookSaleCatalog)
+{
+
+    var second = ViewBag.Second as BookSaleCatalog;
+    <div class="item">
+        <div class="big_book2" style="display: none">
+            <div class="bb_info2">
+                <div class="in_bb_info">
+                    <h3>
+                        @Html.Raw(second.BookDescriptionCatalog.Header)</h3>
+                    @if (second.BookDescriptionCatalog.BookAuthorsRels.Any())
+                    {
+                        foreach (var author in second.BookDescriptionCatalog.BookAuthorsRels)
+                        {
+                        <a class="author_name" href="#">@author.Author.FIO</a>        
+                        }
+                    }
+                    else
+                    {
+                        <a class="author_name" href=""></a>        
+                    }<p>
+                        @Html.Raw(second.BookDescriptionCatalog.Annotation)
+                    </p>
+                    <div class="bb2_buy">
+                        <span class="bb_price"><a href="#">@second.PriceForClient</a> руб.</span> <a class="in_basket"
+                            href="#" rel="to-cart" arg="@second.ID">@if (ShopCart.InitCart().ActiveBooks.Any(x => x.BookSaleCatalog.ID == second.ID))
+                    {
+                        <span class="already-in">Уже в корзине</span>
+                    }</a>
+                    </div>
+                </div>
+            </div>
+            <div class="book_left">
+                <a href="@second.URL">
+                    <img width="263" src="@second.CoverURL"></a>
+            </div>
+        </div>
+    </div>
+    
+@* <div class="banner_right">
+            <a class="banner2" href="#">
+                <img src="i/banner2.jpg"></a>
+        </div>*@
+
+
+}

@@ -1,0 +1,82 @@
+﻿@model Sprinter.Models.OrderDeliveryRegion
+@{
+    ViewBag.Title = "Редактирование региона";
+    Layout = "~/Views/Shared/_Master.cshtml";
+}
+
+<h2>Редактирование региона</h2>
+
+@using (Html.BeginForm())
+{
+    @Html.ValidationSummary(true)
+
+    <fieldset>
+        @Html.HiddenFor(model => model.ID)
+
+        <div class="editor-label">
+            @Html.LabelFor(model => model.Name)
+        </div>
+        <div class="editor-field">
+            @Html.EditorFor(model => model.Name)
+            @Html.ValidationMessageFor(model => model.Name)
+        </div>
+
+        <div class="editor-label">
+            @Html.LabelFor(model => model.Price)
+        </div>
+        <div class="editor-field">
+            @Html.EditorFor(model => model.Price)
+            @Html.ValidationMessageFor(model => model.Price)
+        </div>
+
+        <div class="editor-label">
+            @Html.LabelFor(model => model.RegionDistance)
+        </div>
+        <div class="editor-field">
+            @Html.EditorFor(model => model.RegionDistance)
+            @Html.ValidationMessageFor(model => model.RegionDistance)
+        </div>
+
+        <div class="editor-label">
+            @Html.LabelFor(model => model.DeliveryTime)
+        </div>
+        <div class="editor-field">
+            @Html.EditorFor(model => model.DeliveryTime)
+            @Html.ValidationMessageFor(model => model.DeliveryTime)
+        </div>
+
+        <div class="editor-label">
+            @Html.LabelFor(model => model.DistanceZoneID)
+        </div>
+        <div class="editor-field">
+            @Html.DropDownList("DistanceZoneID", Model.DistanceZoneList)
+            @*@Html.ValidationMessageFor(model => model.DistanceZoneID)*@
+        </div>
+        <div class="editor-label">
+            @Html.LabelFor(model => model.WeightZoneID)
+        </div>
+        <div class="editor-field">
+            @Html.DropDownList("WeightZoneID", Model.WeightZoneList)
+            @*@Html.ValidationMessageFor(model => model.WeightZoneID)*@
+        </div>
+        <div class="editor-label">
+            @Html.LabelFor(model => model.ImportID)
+        </div>
+        <div class="editor-field">
+            @Html.EditorFor(model => model.ImportID)
+            @Html.ValidationMessageFor(model => model.ImportID)
+        </div>
+
+        <p>
+            <input type="submit" value="Сохранить" />
+        </p>
+    </fieldset>
+}
+
+<div class="backref">
+    @Html.ActionLinkQuery("Назад к списку", "Regions", "Delivery", new[] { "pid" })
+</div>
+
+@section scripts {
+    @Scripts.Render("~/bundles/jqueryval")
+}

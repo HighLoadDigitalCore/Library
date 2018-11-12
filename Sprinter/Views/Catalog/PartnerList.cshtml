@@ -1,0 +1,48 @@
+﻿@{
+    ViewBag.Title = "Список поставщиков";
+    Layout = "~/Views/Shared/_Master.cshtml";
+}
+@model IQueryable<Partner>
+<h2>Список поставщиков</h2>
+<fieldset>
+    <table class="grid" style="width: 100%">
+        <tr>
+            <th>Название поставщика
+            </th>
+            <th>Наценка
+            </th>
+            <th>Скидка
+            </th>
+            <th>Приоритет
+            </th>
+            <th>Активен
+            </th>
+            <th></th>
+        </tr>
+        @foreach (var partner in Model)
+        {
+            <tr>
+                <td>@partner.Description (<a href="@Url.Action("MarginPublisherEdit", "Catalog", new { partner = partner.ID })" title="Редактировать наценки">@partner.PublisherCount издательств</a>)
+                </td>
+                <td>
+                    @partner.Margin.ToString("f2")
+                </td>
+                <td>
+                    @partner.Discount.ToString("f2")
+                </td>
+                <td>
+                    @partner.SalePriority
+                </td>
+                <td>
+                    @partner.Enabled.ToYesNoStatus()
+                </td>
+                <td>@Html.ActionLink("редактировать", "PartnerEdit", "Catalog", new { ID = partner.ID }, null)
+                </td>
+            </tr>
+        }
+    </table>
+
+</fieldset>
+<div class="backref">
+    @Html.ActionLink("Добавить поставщика", "PartnerEdit", "Catalog", new { ID = 0 }, null)
+</div>

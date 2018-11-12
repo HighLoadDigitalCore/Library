@@ -1,0 +1,136 @@
+﻿@{
+    ViewBag.Title = "Редактирование наценок для разделов каталога";
+    Layout = "~/Views/Shared/_Master.cshtml";
+}
+@model MarginEditorModel
+<h2>Редактирование наценок для каталога</h2>
+@using (Html.BeginForm())
+{
+
+    <fieldset>
+        @if (ViewBag.Message != null)
+        {
+            <h3 style="color: green">
+                @ViewBag.Message
+            </h3>
+        }
+        <table>
+            <tr>
+                <td>
+                    <b>Выберите режим:</b>
+                </td>
+                <td>
+                    @Html.DropDownList("Type", Model.TypeList)
+                </td>
+            </tr>
+            <tr>
+                <td colspan="2">
+                    @if (Model.Type == 1)
+                    {
+                        <div class="catalog-tree" style="width: 100%;margin-left: 0">
+                            <div id="tree">
+                            </div>
+                        </div>
+                    }
+                    else
+                    {
+                        <div class="tag-box">
+                            @foreach (var tag in Model.Tags)
+                            {
+                                <div class="checkbox-cell">
+                                    @Html.CheckBox("ID_" + tag.ID, false, new { arg = tag.ID })
+                                    @Html.Label(tag.Tag, new { @for = "ID_" + tag.ID })
+                                </div>
+                            }
+                        </div>
+                    }
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    <b>Наценка, %</b>
+                </td>
+                <td>
+                    @Html.HiddenFor(model => model.IDs)
+                    @Html.TextBoxFor(model => model.Margin)
+                    @Html.ValidationMessageFor(model => model.Margin)
+                </td>
+            </tr>
+            <tr>
+                <td colspan="2">
+                    <input type="submit" value="Установить наценку" />
+                </td>
+            </tr>
+        </table>
+    </fieldset>
+}
+@section scripts
+{
+    @Scripts.Render("~/bundles/jqueryval")
+    <script type="text/javascript">
+        var actionLink = '@Url.Action("MarginEdit", "Catalog")';
+        var dataLink = '@Url.Action("GetTreeData", "Catalog")';
+        $(document).ready(function () {
+            $('fieldset select').change(function () {
+                document.location.href = actionLink + '?Type=' + $(this).val();
+            });
+
+            $('fieldset input[type="submit"]').click(function () {
+                if ($('fieldset select').val() == "1") {
+                    var sections = $('#tree').jstree("get_checked", null, true);
+                    if (!sections.length) {
+                        alert("Необходимо выбрать раздел(ы) каталога.");
+                        return false;
+                    }
+                    var sectionsPlain = '';
+                    sections.each(function () {
+                        sectionsPlain += $(this).attr('id').replace('x', '') + ";";
+                    });
+                    $('#IDs').val(sectionsPlain);
+                }
+                else {
+                    var tags = $('.tag-box input[type="checkbox"]').filter(':checked');
+                    if (!tags.length) {
+                        alert("Необходимо выбрать тег(и) товаров.");
+                        return false;
+                    }
+                    var tagPlain = '';
+                    tags.each(function () {
+                        tagPlain += $(this).attr('arg') + ";";
+                    });
+                    $('#IDs').val(tagPlain);
+
+                }
+                return true;
+
+            });
+            loadTree();
+        });
+
+
+        function loadTree() {
+            $.getJSON(dataLink, {}, function (res) {
+                $('#tree').jstree({
+                    "plugins": [
+                        "themes", "json_data", "ui", "cookies", "checkbox"
+                    ],
+                    "cookies": {
+                        "save_opened": "js_tree_margins",
+                        "cookie_options": { expires: 365 }
+                    },
+                    "checkbox": {
+                        "two_state": true
+                    },
+
+                    "themes": {
+                        "theme": "apple",
+                        "url": "/Content/themes/apple/style.css"
+                    },
+
+                    "json_data": { "data": res, "progressive_render": true }
+                });
+
+            });
+        }
+    </script>
+}

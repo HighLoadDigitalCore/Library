@@ -1,0 +1,121 @@
+﻿@{
+    ViewBag.Title = "Редактирование тегов";
+    Layout = "~/Views/Shared/_Master.cshtml";
+}
+@model MasterSearchViewModel
+<h2>Редактирование тегов</h2>
+@Html.Partial("CatalogSearchForm", Model.SearchData)
+<fieldset>
+    <table style="width: 100%;">
+        <tr>
+            <td style="vertical-align: top;width: 220px;">
+                <table id="tag-tbl">
+                    <tr>
+                        <td colspan="2">
+                            <b>Поисковый тег:</b>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td colspan="2">@Html.TextBox("Tag", "", new { style = "width:95%" })
+                        </td>
+                    </tr>
+                    <tr>
+                        <td colspan="2" id="messageCell"></td>
+                    </tr>
+                    <tr>
+                        <td>
+                            <input type="submit" arg="1" style="width: 100px; float: left" value="Добавить" />
+                        </td>
+                        <td>
+                            <input type="submit" arg="0" style="width: 100px; float: right" value="Убрать" />
+                        </td>
+                    </tr>
+                </table>
+            </td>
+            <td style="padding-left: 20px; vertical-align: top;">
+                <b>Найденные теги:</b><hr />
+                <div class="searched-tags">
+                    @foreach (var tag in Model.SearchedTagList)
+                    {
+                        <span arg="@tag.ID">@tag.Tag</span>
+                    }
+                </div>
+            </td>
+        </tr>
+    </table>
+</fieldset>
+
+@Html.Partial("CatalogCommonList", Model)
+@section scripts
+{
+    @Scripts.Render("~/bundles/jqueryval")
+    @Scripts.Render("~/bundles/jqueryui")
+    <script type="text/javascript">
+
+        var dataLink = '@Url.Action("TagList", "Catalog")';
+        var saveLink = '@Url.Action("SaveTag", "Catalog")';
+
+        function showMsg(msg) {
+            $('#messageCell').html(msg);
+
+        }
+
+        function loadTagBtns() {
+            $('.searched-tags span').click(function() {
+                $('#Tag').val($(this).text());
+            });
+
+        }
+
+        $(document).ready(function () {
+            loadTagBtns();
+            $("#Tag").autocomplete({
+                minLength: 2,
+                select: function (event, ui) {
+                    if (ui.item) {
+                        $("#Tag").val(ui.item.value);
+                    }
+                },
+                source: dataLink
+            });
+
+
+            $('#CheckAll').change(function () {
+                if ($(this).attr('checked'))
+                    $('.grid td input[type="checkbox"]').attr('checked', 'checked');
+                else $('.grid td input[type="checkbox"]').removeAttr('checked');
+            });
+
+            $('.grid input[type="checkbox"]').attr('checked', 'checked');
+
+
+            $('#tag-tbl input[type="submit"]').click(function () {
+                var itemsPlain = '';
+
+                var items = $('.grid td input[type="checkbox"]').filter(':checked');
+                if (!items.length) {
+                    showMsg("Необходимо выбрать книги в списке.");
+                    return false;
+                }
+
+                if (!$('#Tag').val().length)
+                    showMsg("Необходимо ввести тег.");
+
+                items.each(function () {
+                    itemsPlain += $(this).attr('darg') + ';';
+                });
+
+                $.post(saveLink, { items: itemsPlain, tag: $('#Tag').val(), arg: $(this).attr('arg') }, function (data) {
+                    showMsg(data);
+                    setTimeout(function () {
+                        document.location.href = document.location.href;
+                    }, 500);
+                });
+
+                return false;
+            });
+
+        });
+
+    </script>
+}

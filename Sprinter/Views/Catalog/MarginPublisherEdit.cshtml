@@ -1,0 +1,123 @@
+﻿@{
+    ViewBag.Title = "Редактирование наценок по издательствам";
+    Layout = "~/Views/Shared/_Master.cshtml";
+}
+@model PagedData<BookPublisher>
+<h2>Редактирование наценок по издательствам</h2>
+<div style="display: none" id="publishersDDL">
+    @Html.DropDownList("Publishers", ViewBag.Publishers as SelectList,new {style="width:160px"})
+    
+    <a href="/" class="cancel" style="float: right;margin-top: 7px"></a>
+    <a href="/" class="accept" style="float: right;margin-top: 7px; margin-right: 3px"></a>
+</div>
+@using (Html.BeginForm())
+{
+    @Html.ValidationSummary(true)
+    <fieldset>
+        <table class="grid publishers-grid">
+            <tr>
+                <th style="width: 20px">
+                    @Html.CheckBox("CheckAll", false)
+                </th>
+                <th>
+                    <b>Издательство</b>
+                </th>
+                <th style="width: 80px">
+                    <b>Наценка, %</b>
+                    <br />
+                    <input type="text" class="common-box" arg="2" style="width: 60px; float: left" /><a title="Поменять значение в выбранных полях" style="float: right; margin-top: 10px;" class="accept" href="/"></a>
+                </th>
+                <th style="width: 80px">
+                    <b>Скидка, %</b>
+                    <br />
+                    <input type="text" class="common-box" arg="3" style="width: 60px; float: left" /><a title="Поменять значение в выбранных полях" style="float: right; margin-top: 10px;" class="accept" href="/"></a>
+                </th>
+                <th style="width: 200px">&nbsp;</th>
+            </tr>
+            @foreach (var publisher in Model)
+            {
+                <tr>
+                    <td>@Html.CheckBox("Publisher_" + publisher.ID, false)
+                    </td>
+                    <td>
+                        @publisher.Name
+                    </td>
+                    <td>
+                        @Html.TextBox("Margin_" + publisher.ID.ToString(), publisher.GetMargin(Request.QueryString["partner"].ToInt()))
+                    </td>
+                    <td>
+                        @Html.TextBox("Discount_" + publisher.ID.ToString(), publisher.GetDiscount(Request.QueryString["partner"].ToInt()))
+                    </td>
+                    <td source="@publisher.ID"><a href="/" class="join-link" >объединить</a></td>
+                </tr>
+            }
+            <tr>
+                <td colspan="5">
+                    <hr />
+                </td>
+            </tr>
+        </table>
+
+        @Model.PagerMenu(Html)
+        <br />
+        <input type="submit" value="Сохранить данные" />
+    </fieldset>
+}
+<div class="backref">
+    @Html.ActionLink("Назад к списку", "PartnerList", "Catalog")
+</div>
+@section scripts
+{
+    <script type="text/javascript">
+        var joinLink = '@Url.Action("PublisherJoin", "Catalog")';
+        $().ready(function () {
+            $('#CheckAll').change(function () {
+                if ($(this).attr('checked'))
+                    $('.grid td input[type="checkbox"]').attr('checked', 'checked');
+                else $('.grid td input[type="checkbox"]').removeAttr('checked');
+            });
+            $('.publishers-grid th .accept').click(function () {
+                var value = $(this).parents('th').find('input').val();
+                var arg = parseInt($(this).parents('th').find('input').attr('arg'));
+                if (value.length) {
+                    $('.grid tr').each(function () {
+                        if ($(this).find('input[type="checkbox"]').is(':checked')) {
+                            $($(this).find('td').get(arg)).find('input').val(value);
+                        }
+                    });
+                }
+                return false;
+            });
+            setDDLClicks();
+
+        });
+
+        function setDDLClicks() {
+            $('.join-link').unbind('click');
+            $('.join-link').click(function () {
+                var cell = $(this).parent();
+                cell.html($('#publishersDDL').clone().show());
+                cell.find('option[value="' + cell.attr('source') + '"]').remove();
+                
+                cell.find('.cancel').click(function () {
+                    $(this).parent().parent().html('<a href="/" class="join-link" >объединить</a>');
+                    setDDLClicks();
+                    return false;
+                });
+
+
+                cell.find('.accept').click(function () {
+                    $.post(joinLink, { source: $(this).parent().parent().attr('source'), target: $(this).parent().parent().find('select').val() }, function(d) {
+                        if(d=='1') {
+                            document.location.href = document.location.href;
+                            
+                        }
+                        return false;
+                    });
+                    return false;
+                });
+                return false;
+            });
+        }
+    </script>
+}

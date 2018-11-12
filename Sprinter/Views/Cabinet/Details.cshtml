@@ -1,0 +1,57 @@
+﻿@model Order
+<div id="CommentCell">
+    <div class="in-tab">
+        <br />
+        <br />
+        @if (ViewBag.Message != null && ((string)ViewBag.Message).IsFilled())
+        {
+            @Html.Raw(ViewBag.Message)
+        }
+        else
+        {
+            if (ViewBag.Header == null)
+            {
+            <h1>Информация о заказе №S@(Request.QueryString["id"].ToInt().ToString("d9"))</h1>
+            }
+            else
+            {
+            <h1>@ViewBag.Header</h1>
+            
+            }
+            <br />
+            @Html.Raw(ViewBag.Data)
+        }
+
+        @if (Model != null)
+        {
+        
+            <h3>Обратная связь:</h3>
+            foreach (var comment in Model.OrderComments.OrderBy(x => x.Date))
+            {
+            <div class="comment">
+                <div class="comment-head">
+                    <span class="author">@(comment.Author.IsNullOrEmpty() ? "Вы" : comment.Author)</span>,
+                       <span class="comment-date">@comment.Date.ToString("d MMMMM yyyy, HH:mm")</span>
+                </div>
+                <div class="comment-text">@Html.Raw(comment.Comment)</div>
+            </div>
+            }
+            using (Ajax.BeginForm("Details", "Cabinet", new { id = Model.ID }, new AjaxOptions() { InsertionMode = InsertionMode.Replace, HttpMethod = "POST", UpdateTargetId = "CommentCell" }))
+            {
+            @Html.Hidden("header", (string)ViewBag.Header)
+            @Html.TextArea("Message", "", 6, 70, null)
+            <br />
+            <input type="submit" value="Отправить сообщение" />
+            <br />
+            @Html.ValidationSummary(true)
+            }
+
+        }
+
+
+        @if (!Request.RawUrl.Contains("view=common"))
+        {
+            <a href="/cabinet?view=orders">Вернуться к списку</a>
+        }
+    </div>
+</div>

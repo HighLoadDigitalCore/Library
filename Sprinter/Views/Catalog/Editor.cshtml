@@ -1,0 +1,334 @@
+﻿@{
+    ViewBag.Title = "Редактирование записи каталога";
+    Layout = "~/Views/Shared/_Master.cshtml";
+}
+@model CatalogEditor
+@if (Model.CurrentItem != null)
+{
+    <h1>Редактирование товара
+        @if (Model.CurrentItem.BookDescriptionCatalog.ID > 0)
+        {
+            @Html.Raw(string.Format("'{0}'", Model.CurrentItem.BookDescriptionCatalog.Header))
+        }</h1>
+    if(Request.QueryString["type"]!="2")
+    {
+        @Html.ActionLink("Создать новый товар с таким же описанием", "Editor", "Catalog", new {type = 1, bookID = Model.CurrentItem.DescriptionID}, null)
+        <br />
+    }
+    @Html.ActionLink("Создать новый товар с новым описанием", "Editor", "Catalog", new { type = 2 }, null)
+    <br />
+        if (Model.AllSaleList.Any())
+        {
+    <div class="backref">
+        <b>Товары от других поставщиков с таким же описанием:</b><br />
+        @foreach (var item in Model.AllSaleList)
+        {
+            @Html.ActionLink(string.Format("{0} ({1} руб.)", item.Partner.Description, item.PartnerPrice), "Editor", new { ID = item.ID, ReturnURL = Model.BackLink })
+            <br />
+        }
+    </div>
+        }
+    <br />
+    <fieldset class="w99">
+        @using (Html.BeginForm("Editor", "Catalog", Model.Routes, FormMethod.Post, new { enctype = "multipart/form-data" }.ToDictionary()))
+        {
+            <h3>Общее описание товара:</h3>
+
+            @Html.Hidden("ID", Model.CurrentItem.ID)
+            @Html.Hidden("DID", Model.CurrentItem.DescriptionID)
+            if (Model.CurrentItem.ID > 0)
+            {
+            <div class="editor-label">
+                @Html.Label("SprinterCode", "Код товара в системе")
+            </div>
+            <div class="editor-field locked">
+                @Html.TextBox("SprinterCode", Model.CurrentItem.BookDescriptionCatalog.SprinterCode)
+            </div>
+            }
+            <div class="editor-label">
+                @Html.Label("Header", "Название товара *")
+            </div>
+            <div class="editor-field">
+                @Html.TextBox("Header", Model.CurrentItem.BookDescriptionCatalog.Header)
+            </div>
+            <div class="editor-label">
+                @Html.Label("Cover", "Обложка")
+            </div>
+            <div class="editor-field">
+                <table style="width: 100%;">
+                    <tr>
+                        <td style="width: 180px">
+                            @if (Model.CurrentItem.BookDescriptionCatalog.ID > 0 && Model.CurrentItem.BookDescriptionCatalog.BookSaleCatalogs.Any())
+                            {
+                                <a href="@Model.CurrentItem.BookDescriptionCatalog.BookSaleCatalogs.First().CoverURL" target="_blank">
+                                    <img src="@Model.CurrentItem.BookDescriptionCatalog.BookSaleCatalogs.First().ThumbURL"/>
+                                </a>
+                            }
+                        </td>
+                        <td style="vertical-align: top;">Загрузить обложку:
+                            <input type="file" id="coverFile" name="coverFile" />
+                        </td>
+                    </tr>
+                </table>
+            </div>
+            <div class="editor-label">
+                @Html.Label("ISBN", "ISBN")
+            </div>
+            <div class="editor-field">
+                @Html.TextBox("ISBN", Model.CurrentItem.BookDescriptionCatalog.ISBN)
+            </div>
+            <div class="editor-label">
+                @Html.Label("Annotation", "Аннотация")
+            </div>
+            <div class="editor-field">
+                @Html.TextArea("Annotation", Model.CurrentItem.BookDescriptionCatalog.Annotation)
+            </div>
+            <div class="editor-label">
+                @Html.Label("Publisher", "Издательство")
+            </div>
+            <div class="editor-field">
+                @Html.TextBox("Publisher", Model.CurrentItem.BookDescriptionCatalog.BookPublisher != null ? Model.CurrentItem.BookDescriptionCatalog.BookPublisher.Name : "")
+            </div>
+            <div class="editor-label">
+                @Html.Label("Authors", "Авторы (ФИО, через запятую)")
+            </div>
+            <div class="editor-field">
+                @Html.TextBox("Authors", Model.CurrentItem.BookDescriptionCatalog.AuthorsByComma)
+            </div>
+            <div class="editor-label">
+                @Html.Label("PublishYear", "Год издания")
+            </div>
+            <div class="editor-field">
+                @Html.TextBox("PublishYear", Model.CurrentItem.BookDescriptionCatalog.PublishYear)
+            </div>
+            <div class="editor-label">
+                @Html.Label("PageCount", "Количество страниц")
+            </div>
+            <div class="editor-field">
+                @Html.TextBox("PageCount", Model.CurrentItem.BookDescriptionCatalog.PageCount)
+            </div>
+            <div class="editor-label">
+                @Html.Label("BookType", "Тип книги")
+            </div>
+            <div class="editor-field">
+                @Html.TextBox("BookType", Model.CurrentItem.BookDescriptionCatalog.BookType ?? "")
+            </div>
+                            if (Model.CurrentItem.BookDescriptionCatalog.EAN > 0)
+                            {
+            <div class="editor-label">
+                @Html.Label("EAN", "EAN13 (формируется автоматически на основе ISBN)")
+            </div>
+            <div class="editor-field locked">
+                @Html.TextBox("EAN", Model.CurrentItem.BookDescriptionCatalog.EAN)
+            </div>
+
+                            }
+                            if (Model.CurrentItem.ID > 0)
+                            {
+            <div class="editor-label">
+                @Html.Label("DataSource", "Первоначальный источник описания")
+            </div>
+            <div class="editor-field locked">
+                @Html.TextBox("DataSource", Model.CurrentItem.BookDescriptionCatalog.BookDescriptionProvider.ProviderName)
+            </div>
+
+                            }
+            <hr />
+            <h3>Данные поставщика:</h3>
+            <div class="editor-label">
+                @Html.Label("Partner", "Поставщик")
+            </div>
+            <div class="editor-field">
+                @Html.DropDownList("Partner", Model.PartnerList)
+            </div>
+            <div class="editor-label">
+                @Html.Label("PartnerUID", "Код товара у поставщика *")
+            </div>
+            <div class="editor-field">
+                @Html.TextBox("PartnerUID", Model.CurrentItem.PartnerUID)
+            </div>
+            
+                            if (Model.CurrentItem.LastUpdate != DateTime.MinValue)
+                            {
+            <div class="editor-label">
+                @Html.Label("LastUpdate", "Последнее обновление цен из прайс-листа поставщика")
+            </div>
+            <div class="editor-field locked">
+                @Html.TextBox("LastUpdate", Model.CurrentItem.LastUpdate.ToString("dd MMMMM yyyy, HH:mm"))
+            </div>
+                            }
+            <div class="editor-label">
+                @Html.Label("PartnerPrice", "Цена (с учетом скидки)")
+            </div>
+            <div class="editor-field">
+                @Html.TextBox("PartnerPrice", Model.CurrentItem.PartnerPriceWithDiscount.ForDisplaing())
+            </div>
+            <div class="editor-label">
+                @Html.Label("TradingPrice", "Рассчетная цена продажи")
+            </div>
+            <div class="editor-field locked">
+                @Html.TextBox("TradingPrice", Model.CurrentItem.TradingPrice.ForDisplaing())
+            </div>
+            <div class="editor-label">
+                @Html.Label("Section", "Раздел каталога")
+            </div>
+            <div class="editor-field">
+                @Html.DropDownList("Section", Model.SectionList)
+            </div>
+            <div class="editor-label">
+                @Html.Label("PriceOverride", "Переопределение цены (заменяет автоматически рассчитанную цену)")
+            </div>
+            <div class="editor-field">
+                @Html.TextBox("PriceOverride", Model.CurrentItem.PriceOverride)
+            </div>
+            <div class="editor-label">
+                @Html.Label("Margin", "Переопределение наценки (заменяет общую наценку для поставщика или издательства), %")
+                @if (Model.CurrentItem.Margin == 0 && Model.CurrentItem.Partner != null)
+                {
+                    <br />
+                    if (Model.CurrentItem.BookDescriptionCatalog.BookPublisher != null && Model.CurrentItem.BookDescriptionCatalog.BookPublisher.GetMargin(Model.CurrentItem.PartnerID) > 0)
+                    {
+                    <span>(текущая наценка товара по издательству: @(Model.CurrentItem.BookDescriptionCatalog.BookPublisher.GetMargin(Model.CurrentItem.PartnerID).ForDisplaing())%) </span>
+                    }
+                    else
+                    {
+                    <span>(текущая наценка товара по поставщику: @(Model.CurrentItem.Partner.Margin.ForDisplaing())%) </span>
+                    }
+                }
+            </div>
+            <div class="editor-field">
+                @Html.TextBox("Margin", Model.CurrentItem.Margin)
+            </div>
+
+            <div class="editor-label">
+                @Html.Label("IsAvailable", "Товар доступен и отображается на сайте")
+            </div>
+            <div class="editor-field">
+                @Html.CheckBox("IsAvailable", Model.CurrentItem.IsAvailable)
+            </div>
+
+            <div class="editor-label">
+                @Html.Label("IsNew", "Товар является новинкой")
+            </div>
+            <div class="editor-field">
+                @Html.CheckBox("IsNew", Model.CurrentItem.IsNew)
+            </div>
+
+            <div class="editor-label">
+                @Html.Label("IsSpec", "Товар является спецпредложением")
+            </div>
+            <div class="editor-field">
+                @Html.CheckBox("IsSpec", Model.CurrentItem.IsSpec)
+            </div>
+
+            <div class="editor-label">
+                @Html.Label("IsTop", "Товар является лидером продаж (по данным поставщика)")
+            </div>
+            <div class="editor-field">
+                @Html.CheckBox("IsTop", Model.CurrentItem.IsTop)
+            </div>
+            <br />
+            <input type="submit" name="main-submit" style="width: 300px!important" value="Сохранить изменения" />
+            <br />
+            <br />
+            <a class="tagl" style="text-decoration: underline" href="@Model.BackLink">Вернуться к списку</a>
+            <br />
+        }
+        <br />
+        <h3>Поисковые теги:</h3>
+        <hr />
+
+        <div class="editor-label" id="tag-list">
+            @if (Model.CurrentItem.BookDescriptionCatalog.BookTagRels.Any())
+            {
+
+                foreach (var tagRel in Model.CurrentItem.BookDescriptionCatalog.BookTagRels)
+                {
+                <a class="tagl" href="/">@tagRel.BookTag.Tag</a>
+                }
+            }
+            else
+            {
+                <b>Тегов не добавлено</b>
+            }
+        </div>
+        <table style="width: 30%;" id="tag-tbl">
+            <tr>
+                <td colspan="2">@Html.TextBox("Tag", "", new { style = "width:95%" })
+                </td>
+            </tr>
+            <tr>
+                <td colspan="2" id="messageCell"></td>
+            </tr>
+            <tr>
+                <td>
+                    <input type="submit" arg="1" style="width: 100px; float: left" value="Добавить" />
+                </td>
+                <td>
+                    <input type="submit" arg="0" style="width: 100px; float: right" value="Убрать" />
+                </td>
+            </tr>
+        </table>
+    </fieldset>
+}
+@section Scripts {
+    @Scripts.Render("~/bundles/jqueryval")
+    @Scripts.Render("~/bundles/jqueryui")
+    <script type="text/javascript">
+        var dataLink = '@Url.Action("TagList", "Catalog")';
+        var saveLink = '@Url.Action("SaveTag", "Catalog")';
+        var listLink = '@Url.Action("tagItemList", "Catalog")';
+        function showMsg(msg) {
+            $('#messageCell').html(msg);
+
+        }
+
+        function loadTagLinks() {
+            $('#tag-list a').click(function () {
+                $('#Tag').val($(this).text());
+                return false;
+            });
+        }
+        $().ready(function () {
+            $('input[name="main-submit"]').click(function () {
+                if (!$('#Header').val().length || !$('#PartnerUID').val().length) {
+                    alert('Необходимо заполнить название товара и код поставщика.');
+                    return false;
+                }
+                return true;
+            });
+            $('.locked input').attr('disabled', 'disabled');
+            loadTagLinks();
+            $("#Tag").autocomplete({
+                minLength: 2,
+                select: function (event, ui) {
+                    if (ui.item) {
+                        $("#Tag").val(ui.item.value);
+                    }
+                },
+                source: dataLink
+            });
+
+            $('#tag-tbl input[type="submit"]').click(function () {
+                var itemsPlain = $('#DID').val() + ';';
+
+                if (!$('#Tag').val().length)
+                    showMsg("Необходимо ввести тег.");
+
+                $.post(saveLink, { items: itemsPlain, tag: $('#Tag').val(), arg: $(this).attr('arg') }, function (data) {
+                    showMsg(data);
+
+                    $.get(listLink, { bid: $('#DID').val() }, function (d) {
+                        $('#tag-list').html(d);
+                        loadTagLinks();
+                    }, "html");
+
+                });
+
+                return false;
+            });
+
+        })
+    </script>
+
+}

@@ -1,0 +1,77 @@
+﻿@{
+    ViewBag.Title = "Импорт прайс-листа ";
+    Layout = "~/Views/Shared/_Master.cshtml";
+}
+@model DownloadInfo
+@Html.Partial("SectionListImporter", /*new { partnerName = "Глобус" }*/ Model.SectionListDownloadInfo)
+<h2>Импорт каталога Библио-глобуса</h2>
+<br />
+
+@using (Html.BeginForm("Globus", "Import", FormMethod.Post, new { enctype = "multipart/form-data" }))
+{
+    @Html.ValidationSummary(true)
+    <fieldset>
+        <b style="color: orange">Внимание, необходимо загрузить все обновления прайсов в течение 24 часов, иначе потом при импорте второй и последующих частей, все ненайденные записи из предыдущего прайс-листа будут помечены как неактивные.</b>
+        <div class="editor-label">
+            Выберите прайс-лист(zip, rar или xls)
+        </div>
+
+        <div class="editor-field">
+            <input type="file" id="file" name="file" size="23" />
+        </div>
+        <div class="editor-field">
+            Прайс-лист со спецпредложениями:
+            @Html.CheckBox("isSpec", false)
+        </div>
+
+        <input type="submit" value="Загрузить каталог" />
+        <br />
+        <br />
+        <div style="display: none" class="message-cell">
+            <div class="created">
+                Создано&nbsp;<b></b>&nbsp;записей
+            </div>
+            <div class="updated">
+                Обновлено&nbsp;<b></b>&nbsp;записей
+            </div>
+            <div class="errors">
+                Помечено неактивными&nbsp;<b></b>&nbsp;записей
+            </div>
+            <br />
+            <div class="message-box">
+            </div>
+        </div>
+    </fieldset>
+   
+}
+@section scripts
+{
+    <script src="@Url.Content("~/Scripts/jquery.validate.min.js")" type="text/javascript"></script>
+    <script src="@Url.Content("~/Scripts/jquery.validate.unobtrusive.min.js")" type="text/javascript"></script>
+    <script type="text/javascript">
+        var refreshURL = '@Url.Action("loadInfo", "Parser")';
+        $().ready(function () {
+            loadInfo();
+        });
+
+        function loadInfo() {
+            $.get(refreshURL, { name: 'Глобус' }, function (data) {
+                if (!data.StartDate)
+                    return;
+                $('.message-cell').show();
+                $('.message-box').html(data.MessageList);
+                $('.dirs b').html(data.Dirs);
+                $('.created b').html(data.Created);
+                $('.updated b').html(data.Updated);
+                $('.errors b').html(data.Deleted);
+
+                if (!data.EndDate)
+                    setTimeout('loadInfo();', 2000);
+                else if (!$('.start').length) {
+                        //window.location.reload();
+                }
+            });
+
+        }
+    </script>
+}

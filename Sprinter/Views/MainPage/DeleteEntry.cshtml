@@ -1,0 +1,19 @@
+﻿@model BooksOnMain
+@{
+    ViewBag.Title = "Удаление книги из списка";
+    Layout = "~/Views/Shared/_Master.cshtml";
+}
+<h2>@ViewBag.Header</h2>
+@using (Html.BeginForm())
+{
+
+    <fieldset>
+        <h3>
+            Вы уверены что хотите удалить книгу "@Model.BookSaleCatalog.BookDescriptionCatalog.Header"
+            из списка?</h3>
+        <input type="submit" value="Удалить" />
+    </fieldset>
+}
+<div class="backref">
+    @Html.ActionLink("Назад к списку", "EditTabs", new{tab=Request["tab"]}, null)
+</div>

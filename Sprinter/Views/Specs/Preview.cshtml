@@ -1,0 +1,13 @@
+﻿@model BookSaleCatalog
+@if (Model != null)
+{
+    <div class="p-name">
+        @Html.Raw(Model.BookDescriptionCatalog.Header)
+    </div>
+    <div class="p-isbn">ISBN: 
+        @(Model.BookDescriptionCatalog.ISBN.IsFilled()?Model.BookDescriptionCatalog.ISBN:"---")
+    </div>
+    <div class="p-name">
+        <img src="@Model.ThumbURL"/>
+    </div>
+}

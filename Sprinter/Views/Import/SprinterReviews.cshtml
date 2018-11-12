@@ -1,0 +1,64 @@
+﻿@{
+    ViewBag.Title = "Импорт данных с сайта Sprinter.ru";
+    Layout = "~/Views/Shared/_Master.cshtml";
+}
+@model DownloadInfo
+<h2>
+    Импорт данных с сайта Sprinter.ru</h2>
+@using (Html.BeginForm())
+{
+    @Html.ValidationSummary(true)
+    <fieldset>
+        <div class="editor-label">
+            @Html.LabelFor(model => model.URL)
+        </div>
+        <div class="editor-field">
+            @Html.TextBoxFor(model => model.URL)
+            @Html.ValidationMessageFor(model => model.URL)
+        </div>
+        <input type="submit" value="Загрузить каталог" />
+        <br />
+        <br />
+        <div style="display: none" class="message-cell">
+            <div class="created">
+                Создано&nbsp;<b></b>&nbsp;записей</div>
+            <div class="updated">
+                Обновлено&nbsp;<b></b>&nbsp;записей</div>
+            <div class="errors">
+                Пропущено из-за ошибок&nbsp;<b></b>&nbsp;записей</div>
+            <br />
+            <div class="message-box">
+            </div>
+        </div>
+    </fieldset>
+   
+}
+@section scripts
+{
+    <script src="@Url.Content("~/Scripts/jquery.validate.min.js")" type="text/javascript"></script>
+    <script src="@Url.Content("~/Scripts/jquery.validate.unobtrusive.min.js")" type="text/javascript"></script>
+    
+        <script type="text/javascript">
+            var refreshURL = '@Url.Action("loadInfo", "Parser")';
+            $().ready(function () {
+                loadInfo();
+            });
+
+            function loadInfo() {
+                $.get(refreshURL, { name: 'SprinterReviews' }, function (data) {
+                    if (!data.StartDate)
+                        return;
+                    $('.message-cell').show();
+                    $('.message-box').html(data.MessageList);
+                    $('.dirs b').html(data.Dirs);
+                    $('.created b').html(data.Created);
+                    $('.updated b').html(data.Updated);
+                    $('.errors b').html(data.Errors);
+
+                    if (!data.EndDate)
+                        setTimeout('loadInfo();', 2000);
+                });
+
+            }
+    </script>
+}

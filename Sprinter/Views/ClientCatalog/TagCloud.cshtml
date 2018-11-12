@@ -1,0 +1,21 @@
+﻿@model CatalogTagCloudViewModel
+
+@if(Model.TagList.Any())
+{
+
+    <div class="popular_tag">
+        <div class="top_pt">
+            <h2>
+                Популярные спринт-тэги</h2>
+            <p>
+                <span class="arrow_tag"></span><span class="tag_help_block">Помогут вам найти больше
+                                                   <a href="/about_tags">Как это работает?</a></span></p>
+        </div>
+        <div class="pop_tag_block">
+            @foreach(var tag in Model.TagList)
+            {
+            <a class="tag_size1" style="font-size: @(tag.FontSize)px" href="@tag.Link">@tag.Tag.Tag</a><span>,</span>
+            }
+        </div>
+    </div>
+}

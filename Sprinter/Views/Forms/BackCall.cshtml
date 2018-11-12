@@ -1,0 +1,20 @@
+﻿@model BackCallForm     
+<div id="BackCall">
+@if (Model.IsSent)
+{
+    <div class="sent">@Model.ResultMessage</div>
+}
+else
+{
+    using (Ajax.BeginForm("BackCall", "Forms", new AjaxOptions() { HttpMethod = "POST", InsertionMode = InsertionMode.Replace, UpdateTargetId = "BackCall" }))
+    {
+         @Html.ValidationSummary(true)
+    <label for="Phone">@Html.DisplayNameFor(model => model.Phone) @Html.EditorFor(model => model.Phone)</label>
+    <label for="Name">@Html.DisplayNameFor(model => model.Name) @Html.EditorFor(model => model.Name)</label>
+    <p>
+        <input type="submit" value="Отправить запрос" />
+    </p>
+
+    }
+}
+    </div>

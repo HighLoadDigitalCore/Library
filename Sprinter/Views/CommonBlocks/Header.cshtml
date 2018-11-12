@@ -1,0 +1,38 @@
+﻿@model HeaderViewModel
+<div id="header">
+    <div class="top">
+        @if (Model.MainMenu.Any())
+        {
+            <ul>
+                @foreach (var page in Model.MainMenu.Take(Model.MainMenu.Count() - 1))
+                {
+                    <li><a href="@page.FullUrl">@page.PageName</a></li>
+                }
+            </ul>
+            <div class="partners">
+                <span class="l_part"></span><a href="@Model.MainMenu.Last().FullUrl">
+                    <p>
+                        @Model.MainMenu.Last().PageName
+                    </p>
+                </a><span class="r_part"></span>
+            </div>
+            <a href="/cabinet" class="entry@(AccessHelper.IsAuthClient ? "" : " auth-link")">&#8594; Войти в личный кабинет</a>
+        }
+    </div>
+    <div class="header_block">
+        <a href="/" class="logo"></a>
+        <div class="phone">
+            @Html.Raw(Model.HeaderPhones)
+        </div>
+        <div class="feedback">
+            <p>
+                Обратная связь
+            </p>
+            <span>бесплатная консультация</span>
+            <div id='basic-modal'>
+                <a href="#" class="basic">Задать вопрос</a>
+            </div>
+        </div>
+        @Html.Action("CartBlock", "ShopCart")
+    </div>
+</div>

@@ -1,0 +1,33 @@
+﻿@if (AccessHelper.IsAuthClient)
+{
+    <div class="main">
+        <div class="m-container">
+            <div class="m-content">
+                <div class="steps">
+                    <ul>
+                        <li class="f-step">
+                            <a href="/cabinet?view=common">Общая информация</a>
+                        </li>
+                        <li class="f-step">
+                            <a href="/cabinet?view=orders">Список заказов</a>
+                        </li>
+                        <li class="f-step">
+                            <a href="/cabinet?view=shopcart">Корзина и отложенные товары</a>
+                        </li>
+                        <li class="f-step">
+                            <a href="/cabinet?view=personal">Персональная информация</a>
+                        </li>
+                        <li class="f-step-r">
+                            <a href="/cabinet?view=settings">Настройки</a>
+                        </li>
+                    </ul>
+                </div>
+                @Html.Action(CabinetPageSelector.CurrentAction, "Cabinet")
+            </div>
+        </div>
+    </div>
+}
+else
+{
+    <div style="height: 300px"></div>
+}

@@ -1,0 +1,197 @@
+﻿@model BookSaleCatalog
+<div class="content_block">
+    <p class="name_book">
+        @Html.Raw(Model.BookCatalogClientLinkedPath)
+    </p>
+    <div class="book_page">
+        <div class="description_book">
+            <div class="in_db">
+                <h1>
+                    @Html.Raw(Model.BookDescriptionCatalog.HeaderWithAuthors)</h1>
+                @if (Model.BookDescriptionCatalog.BookAuthorsRels.Any())
+                {
+                    foreach (var author in Model.BookDescriptionCatalog.BookAuthorsRels)
+                    {
+                    <a class="author_name" href="#">@author.Author.FIO</a>        
+                    }
+                }
+                else
+                {
+                    <a class="author_name" href=""></a>        
+                }
+                <div class="item">
+                    <table cellspacing="0" border="0">
+                        <tr>
+                            <td width="180px;">Спринтер-код<span>@Model.SprinterCode</span>
+                            </td>
+                            @if (!Model.BookDescriptionCatalog.ISBN.IsNullOrEmpty())
+                            {
+                                <td>ISBN: @Model.BookDescriptionCatalog.ISBN
+                                </td>
+                            }
+                            else if (!Model.BookDescriptionCatalog.EAN.HasValue && Model.BookDescriptionCatalog.EAN > 0)
+                            {
+                                <td>EAN: @Model.BookDescriptionCatalog.EAN
+                                </td>
+  
+                            }
+                            @if (@Model.BookDescriptionCatalog.BookPublisher != null)
+                            {
+                                <td>Издательство: <a href="#">@Model.BookDescriptionCatalog.BookPublisher.Name</a>
+                                </td>
+                            }
+                        </tr>
+                        @* <tr>
+                            <td width="180px;">
+                                <p>
+                                    Есть на складе</p>
+                            </td>
+                            <td>
+                                Передача в службу доставки:
+                            </td>
+                            <td>
+                                11.04.2012 после 18:00
+                            </td>
+                        </tr>*@
+                    </table>
+                </div>
+                @if (!Model.IsMaxOverPriced && Model.TradingPrice>0 && Model.IsAvailable)
+                {
+                    <div class="buy_line" id="shop_block">
+                        <div class="price_db">
+                            <p>
+                                Цена:<a href="#">@Model.PriceForClient</a><span>руб.</span>
+                            </p>
+                        </div>
+                        <a class="basket_db" href="#" rel="to-cart" arg="@Model.ID">
+                            @if (ShopCart.InitCart().ActiveBooks.Any(x => x.BookSaleCatalog.ID == Model.ID))
+                            {
+                                <span class="already-in">Уже в корзине</span>
+                            }</a>
+                        <div class="number_db">
+                            <label>
+                                Количество:
+                                <input type="number" value="1" id="count">
+                                шт.</label>
+                        </div>
+                    </div>
+                }
+                else
+                {
+                    <div style="height: 30px; float: left;">
+                        &nbsp;
+                    </div>
+  
+                }
+                <div class="detailed">
+                    <ul>
+                        <li id="annotation" class="noact"><a arg="book-tab-switcher" href="#">Аннотация</a></li>
+                        <li id="details" class="noact"><a arg="book-tab-switcher" href="#">Подробнее</a></li>
+                        <li id="comments" class="noact"><a arg="book-tab-switcher" href="#">Отзывы</a></li>
+                    </ul>
+                    <div class="tab" id="detailed-annotation">
+                        @Html.Raw(Model.BookDescriptionCatalog.SEOAnnotation)
+                    </div>
+                    <div class="tab" id="detailed-details">
+                        @if (Model.BookDescriptionCatalog.PageCount.HasValue)
+                        {
+                            <div class="char">
+                                <div class="char-name">Страниц:</div>
+                                <div class="char-value">@Model.BookDescriptionCatalog.PageCount</div>
+                            </div>
+                        }
+                        @if (Model.BookDescriptionCatalog.PublishYear.HasValue)
+                        {
+                            <div class="char">
+                                <div class="char-name">Год:</div>
+                                <div class="char-value">@Model.BookDescriptionCatalog.PublishYear</div>
+                            </div>
+                        }
+                        @if (Model.BookDescriptionCatalog.BookType.IsFilled())
+                        {
+                            <div class="char">
+                                <div class="char-name">Формат:</div>
+                                <div class="char-value">@Model.BookDescriptionCatalog.BookType</div>
+                            </div>
+                        }
+                        @foreach (var value in Model.BookDescriptionCatalog.BookDescriptionDataValues)
+                        {
+                            <div class="char">
+                                <div class="char-name">@value.BookDescriptionDataKey.Description:</div>
+                                <div class="char-value">@(value.BookDescriptionDataKey.DataKey == "Weight" ? (value.DataValue.ToDecimal()*1000).ToString() +" г." : value.DataValue)</div>
+                            </div>
+                        }
+                        
+                    </div>
+                    <div class="tab" id="detailed-comments">
+                        @foreach (var comment in Model.BookDescriptionCatalog.BookComments.Where(x=> x.Approved).OrderByDescending(x=> x.Date))
+                        {
+                            <div class="comment">
+                                <div class="comment-head">
+                                    <span class="author">@(comment.UserName.IsFilled() ? comment.UserName : "[Anonimous]")</span>,
+                                    <span class="comment-date">@comment.Date.ToString("d MMMMM yyyy, HH:mm")</span>
+                                </div>
+                                <div class="comment-text">@comment.Comment</div>
+                            </div>
+                        }
+                    </div>
+                </div>
+                <div class="sprint_tags">
+                    @if (Model.BookDescriptionCatalog.BookTagRels.Any())
+                    {
+                        <h2>Спринт теги</h2>
+                        foreach (var tag in Model.BookDescriptionCatalog.BookTagRels)
+                        {
+                        <div class="st">
+                            <a href="@tag.BookTag.TagFilterURL">@tag.BookTag.Tag</a><span></span>
+                        </div>        
+                        }
+
+                    }
+                    <div class="additional_tags">
+                        <a class="tag1" href="#">Добавить тэг</a> <a class="tag2" href="#">Добавить отзыв</a>
+                        <a class="tag3" href="#">Написать замечание</a>
+                    </div>
+                    <div class="help">
+                        <span></span>
+                        <div class="help_text">
+                            <h3>Добавляйте свои тэги и получайте бонусы
+                            </h3>
+                            <p>
+                                Спринт-тэги позволяют нам <a href="/about_tags">искать и показывать лучшие предложения</a>,
+                                похожие книги и рекомендованные товары. Помогите нам со связями, а взмен мы предоставим
+                                вам скидку на покупки и качественный сервис
+                            </p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="cover">
+            <img src="@Model.CoverURL" width="236">
+            <div class="social">
+                <p>
+                    Поделиться:
+                </p>
+                <div class="share42init">
+                </div>
+                <script type="text/javascript" src="/Content/client/js/share42.js"></script>
+                <script type="text/javascript">                    share42('js/')</script>
+            </div>
+            <div class="stars" arg="@Model.DescriptionID" val="@Model.BookDescriptionCatalog.AverageRounded">
+                <p>
+                    Оценка:
+                </p>
+            </div>
+        </div>
+    </div>
+</div>
+<div class="content_block">
+    <ul class="menu_line" id="switcher_details" savename="switcher_on_book_page">
+        <li class="ml_link"><a num="0" class="ml_link" href="@Url.Action("BooksPopularList", new { type = 0, viewOnBookPage = true, bookID = Model.ID })">Рекомендованные товары</a></li>
+        <li class="ml_link"><a num="1" class="ml_link" href="@Url.Action("BooksPopularList", new { type = 1, viewOnBookPage = true, bookID = Model.ID })">Похожие товары</a></li>
+        <li class="ml_link"><a num="2" class="ml_link" href="@Url.Action("BooksPopularList", new { type = 2, viewOnBookPage = true, bookID = Model.ID })">С этим покупают</a></li>
+    </ul>
+    <div id="ajax-content" savename="switcher_on_book_page">
+    </div>
+</div>

@@ -1,0 +1,13 @@
+﻿@{
+    ViewBag.Title = "Редактирование регионов доставки";
+    Layout = "~/Views/Shared/_Master.cshtml";
+}
+@model IEnumerable<KeyValuePair<string, string>>
+<h2>Выберите список</h2>
+<fieldset>
+    @foreach (var item in Model)
+    {
+        <a href="@item.Key">@item.Value</a>
+        <br />
+    }
+</fieldset>

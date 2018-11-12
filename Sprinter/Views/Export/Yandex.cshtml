@@ -1,0 +1,182 @@
+﻿@{
+    ViewBag.Title = "Экспорт в YML";
+    Layout = "~/Views/Shared/_Master.cshtml";
+}
+@model CatalogExportFilterModel
+<h2>Экспорт в YML</h2>
+
+@using (Html.BeginForm())
+{
+    @Html.ValidationSummary(true)
+    <fieldset id="search-form">
+        <table style="float: left; width: 100%">
+            <tr>
+                <td>
+
+                    <div id="tree" style="height: 400px; overflow-y: scroll; overflow-x: hidden; width: 350px;">
+                    </div>
+                    @Html.HiddenFor(model => model.PageListPlain)
+                </td>
+                <td>
+                    <table style="width: 100%; float: right">
+                        <tr>
+                            <td colspan="2">
+                                <b>Выберите поставщиков:</b>
+                                <div class="partners-box">
+                                    @Html.HiddenFor(model => model.PartnerListPlain)
+                                    @foreach (var partner in Model.Partners)
+                                    {
+                                        <div class="box-cell">
+                                            @Html.CheckBox("Partner_" + partner.ID, partner.Enabled ? (object)new { arg = partner.ID } : (object)new { arg = partner.ID, inactive = "1" })
+                                            <label for="@("Partner_" + partner.ID)">@partner.Description</label>
+                                        </div>
+                                    }
+                                </div>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td colspan="2">
+                                @Html.LabelFor(model => model.MinPrice, "Мин. цена")
+                                @Html.TextBoxFor(model => model.MinPrice)
+                            </td>
+
+                        </tr>
+                        <tr>
+                            <td colspan="2">
+                                @Html.LabelFor(model => model.MaxPrice, "Макс. цена")
+                                @Html.TextBoxFor(model => model.MaxPrice)
+                            </td>
+                        </tr>
+                        <tr>
+                            <td style="width: 50%">
+                                @Html.CheckBoxFor(model => model.AvailableOnly)
+                                @Html.LabelFor(model => model.AvailableOnly, "Только доступные")
+                            </td>
+                            <td>
+                                @Html.CheckBoxFor(model => model.UseZip)
+                                @Html.LabelFor(model => model.UseZip, "Использовать архивацию")
+                            </td>
+                        </tr>
+                        <tr>
+                            <td colspan="2">
+                                <input type="submit" class="export-submit" value="Экспортировать в YML" />
+                            </td>
+                        </tr>
+                    </table>
+                </td>
+            </tr>
+
+        </table>
+        <br />
+
+
+    </fieldset>
+    <br />
+    <br />
+    <div style="display: none" class="message-cell">
+        <div class="created">
+            Обработано&nbsp;<b id="curCount"></b>&nbsp;записей из&nbsp;<b id="allCount"></b>&nbsp;
+        </div>
+        <br />
+        <div class="message-box">
+        </div>
+    </div>
+
+    
+
+}
+@section scripts
+{
+    <script type="text/javascript">
+        var dataLink = '@Url.Action("GetTreeData", "Catalog")';
+        var saveLink = '@Url.Action("SaveData", "Catalog")';
+        var deleLink = '@Url.Action("DeleteData", "Catalog")';
+        var refreshURL = '@Url.Action("loadInfo", "Parser")';
+        $(document).ready(function () {
+            loadTree();
+            loadInfo();
+            $('.export-submit').click(function () {
+
+
+                var sectionPlain = '';
+                var itemsPlain = '';
+                var sections = $('#tree').jstree("get_checked", null, true);
+                if (!sections.length/* && $(this).attr('arg') == 'move'*/) {
+                    alert("Необходимо выбрать раздел(ы) каталога.");
+                    return false;
+                }
+                var items = $('.partners-box input[type="checkbox"]').filter(':checked');
+                if (!items.length) {
+                    alert("Необходимо выбрать поставщиков в списке.");
+                    return false;
+                }
+
+
+                sections.each(function () {
+                    sectionPlain += $(this).attr('id').replace('x', '') + ";";
+                });
+
+                $('#PageListPlain').val(sectionPlain);
+
+                items.each(function () {
+                    itemsPlain += $(this).attr('arg') + ';';
+                });
+
+                $('#PartnerListPlain').val(itemsPlain);
+
+                return true;
+            });
+
+        });
+
+        function loadInfo() {
+            $.get(refreshURL, { name: 'YandexExport' }, function (data) {
+                if (!data.StartDate)
+                    return;
+                $('.message-cell').show();
+                $('.message-box').html(data.MessageList);
+                $('#curCount').html(data.Created);
+                $('#allCount').html(data.Updated);
+
+                if (!data.EndDate)
+                    setTimeout('loadInfo();', 2000);
+                else if (!$('.start').length) {
+                        //window.location.reload();
+                }
+            });
+
+        }
+
+        function loadTree() {
+            $.getJSON(dataLink, {}, function (res) {
+
+
+                $('#tree').jstree({
+                    "plugins": [
+                        "themes", "json_data", "ui", "cookies", "dnd", "search", "types", "checkbox"
+                    ],
+
+                    "cookies": {
+                        "save_opened": "js_tree_catalog_yandex",
+                        "cookie_options": { expires: 365 }
+                    },
+
+                    "checkbox": {
+                        "two_state": false
+                    },
+
+                    "themes": {
+                        "theme": "apple",
+                        "url": "/Content/themes/apple/style.css"
+                    },
+
+                    "json_data": {
+                        "data": res,
+                        "progressive_render": true
+                    }
+                });
+
+            });
+        }
+    </script>
+}

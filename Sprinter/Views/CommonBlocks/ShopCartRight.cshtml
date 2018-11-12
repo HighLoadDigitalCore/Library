@@ -1,0 +1,73 @@
+﻿@model ShopCartRight
+@if (OrderSteps.CurrentStep < 5)
+{
+    <div class="m-sideRight">
+        <h3>Информация о заказе</h3>
+        <div class="order-info">
+            <table cellspacing="0" border="0">
+
+                <tr>
+                    <td class="column1"><strong>Всего товаров в заказе</strong></td>
+                    <td class="column2"><strong class="size18">@Model.Cart.TotalCount</strong></td>
+                </tr>
+                @if (Model.Cart.ActiveBooks.Any())
+                {
+                    <tr>
+                        <td><strong>Итого</strong><br>
+                            (без скидок и доставки)</td>
+                        <td><span class="oc">@Model.Cart.TotalSum.ForDisplaing()</span> руб</td>
+                    </tr>
+                }
+                @if (Model.Discount > 0)
+                {
+                    <tr class="ol">
+                        <td><a href="#">Скидка</a></td>
+                        <td><strong class="size18">@Model.Discount.ForDisplaing()%</strong></td>
+                    </tr>
+                    <tr>
+                        <td><strong>Со всеми скидками</strong>
+                            <br>
+                            (без доставки)</td>
+                        <td><span class="oc">@Model.Cart.TotalSum.ForDisplaing()</span> руб</td>
+                    </tr>
+                }
+                @if (Model.Cart.SelectedRegion.ID > 0 && Model.Cart.ActiveBooks.Any())
+                {
+                    <tr>
+                        <td><strong>Доставка </strong>
+                            <br>@Model.Cart.SelectedRegion.OrderDeliveryProvider.Name</td>
+
+                        <td>
+                            <span class="oc">@Model.Cart.SelectedRegion.OrderDeliveryCost.ForDisplaing()</span> руб
+                        </td>
+                    </tr>
+                    <tr>
+                        <td><strong>ИТОГО К ОПЛАТЕ</strong></td>
+                        <td><span class="oc">@Model.FinalSum.ForDisplaing()</span> руб</td>
+                    </tr>
+                }
+                @if (Model.Cart.ActiveBooks.Any() && OrderSteps.CurrentStep != 4)
+                {
+                    <tr colspan="2">
+                        <td><a class="make-out" href="@(Model.Steps.AllCorrect ? Model.Steps.LastStepUrl : OrderSteps.NextStepUrl)">Оформить заказ</a></td>
+                    </tr>
+                }
+            </table>
+        </div>
+        @*<div class="entry-code">
+				<span>Ввести код скидки<a href="#">Что это?</a></span>
+				<div class="code-search">
+					<input type="text">
+					<input type="submit" value="">
+				</div>
+			</div>
+			<div class="discount">
+				<h3><span></span>Скидки и бонусы<span></span></h3>
+				<p>Зарабатывайте скидки и бонусы, с помощью нашей <a href="#">программы улучшения каталога.</a></p>
+				<p>Добавляйте свои тэги к товарам, пишите отзывы и приглашайте друзей. Полученные скидки и бонусы вы можете потратить на любые товары при оформлении заказа.</p>
+				<p><span class="p-a"><a href="#">Оценить книги</a></span><span class="p-green">+100</span> баллов</p>
+				<p><span class="p-a"><a href="#">Написать рецензию</a></span><span class="p-green">+50</span> баллов</p>
+				<p><span class="p-a"><a href="#">Добавить спринт-тэги</a></span><span class="p-green">+2%</span> скидки</p>
+			</div>*@
+    </div>
+}

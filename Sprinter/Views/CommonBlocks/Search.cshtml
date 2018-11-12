@@ -1,0 +1,22 @@
+﻿@model CommonSearch
+@using (Html.BeginForm("Search", "CommonBlocks", FormMethod.Post))
+{
+    <div class="search">
+        <div class="search_line">
+            @Html.TextBox("SearchQuery", Model.SearchQuery.IsFilled() ? Model.SearchQuery : "Поиск товаров по названию, автору, производителю или ISBN", new { @class = "blur-box", def = "Поиск товаров по названию, автору, производителю или ISBN", req = "1" })
+            <input type="submit" value="Найти" />
+        </div>
+    </div>
+    if (Model.NeedShowSection)
+    {
+    <div class="undress">
+        <span class="in_undress"></span>
+        <div class="form">
+            <label>
+                @Html.CheckBox("OnlyInCurrentSection", (Model.SectionID ?? 0) > 0)Искать в этом разделе
+            </label>
+            @*<a href="#">Расширенный поиск</a>*@
+        </div>
+    </div>
+    }
+}

@@ -1,0 +1,56 @@
+﻿@using Sprinter.Extensions
+@model CatalogSectionViewModel
+<div class="content_block">
+    <div class="textbook">
+        <div class="tb_left">
+            <h2>
+                @Model.CurrentPage.PageName</h2>
+            <div class="left_column_tb">
+                @foreach (var sectionList in Model.FirstRow)
+                {
+                    <div class="tb_item">
+                        <h3>
+                            <a href="/@sectionList.CurrentPage.FullUrl">@sectionList.CurrentPage.PageName</a><span>(@sectionList.BookCount)</span></h3>
+                        <p>
+                            @Html.Raw(sectionList.SectionList)</p>
+                        @if (!sectionList.SectionList.IsNullOrEmpty())
+                        {
+                            <span><a href="/@sectionList.CurrentPage.FullUrl">Ещё</a></span>
+                        }
+                    </div>
+
+                }
+            </div>
+            <div class="right_column_tb">
+                @foreach (var sectionList in Model.SecondRow)
+                {
+                    <div class="tb_item">
+                        <h3>
+                            <a href="/@sectionList.CurrentPage.FullUrl">@sectionList.CurrentPage.PageName</a><span>(@sectionList.BookCount)</span></h3>
+                        <p>
+                            @Html.Raw(sectionList.SectionList)</p>
+                        @if (!sectionList.SectionList.IsNullOrEmpty())
+                        {
+                            <span><a href="/@sectionList.CurrentPage.FullUrl">Ещё</a></span>
+                        }
+                    </div>
+
+                }
+            </div>
+            @Html.Action("TagCloud")
+        </div>
+    </div>
+    <div class="selection">
+        @Html.Action("TagComplexFilter")
+        @Html.Action("TagSimpleFilter")
+    </div>
+</div>
+
+<div class="content_block">
+    <ul class="menu_line" id="switcher_details" savename="switcher_on_cat_page">
+        <li class="ml_link"><a num="0" class="ml_link" href="@Url.Action("BooksPopularList", new { type = 0, viewOnBookPage = false, bookID = (int?)null })">
+            Популярные товары</a></li>
+    </ul>
+    <div id="ajax-content" savename="switcher_on_cat_page">
+    </div>
+</div>

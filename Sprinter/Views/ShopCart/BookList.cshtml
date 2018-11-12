@@ -1,0 +1,32 @@
+﻿@model IEnumerable<ShopCartItem>                    
+
+<div class="in-tab">
+    @foreach(var item in Model)
+    {
+        <div class="book-line">
+
+            <a href="/@item.BookSaleCatalog.URL"><img src="@item.BookSaleCatalog.ThumbURL" width="118" height="171"></a>
+            <div class="bl-info bl-info-cart">
+                <div class="in-bl-info">
+                    <h2>@Html.Raw(item.BookSaleCatalog.BookDescriptionCatalog.Header)<span class="price"><strong>@item.PriceForOffer.ForDisplaing()</strong> руб</span>
+                        <br><b class="code">Код товара: @item.BookSaleCatalog.SprinterCode</b>
+                    </h2>
+                    <div class="number">
+                        <label>Количество:
+                            <input type="number" value="@item.Count"></label>
+                        <label class="mt">Итого:<span class="price"><strong>@((item.Count*item.PriceForOffer).ForDisplaing())</strong> руб</span></label>
+                    </div>
+                    <span class="name">
+                        @item.BookSaleCatalog.BookDescriptionCatalog.AuthorsByComma
+                    </span>
+                    @*<span class="date">Дата отправки: @DateTime.Now.AddDays(1).ToString("dd.MM.yyyy")</span>*@
+                    <div class="links">
+                        <a class="link-green" href="#" arg="@item.ID" action="delay">@(item.IsDelayed?"В корзину":"Отложить на потом")</a>
+                        <a class="link-red" href="#" arg="@item.ID" action="delete">@(item.IsDelayed?"Удалить":"Удалить из заказа")</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    }
+ 
+</div>

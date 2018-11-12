@@ -1,0 +1,25 @@
+﻿@model PagedData<BookSaleCatalog>
+<div class="content_block">
+    <div class="item">
+        <div class="books_sale_line" style="height: auto">
+            @foreach (var book in Model)
+            {
+                <div class="bs">
+                    @if (book.CanBeSold)
+                    {
+                        <a class="buyitnow" href="#" arg="@book.ID">Купить сразу</a>
+                    }
+                    <a class="bs_img" title="@Html.Raw(book.BookDescriptionCatalog.Header)" href="@book.URL">
+                        <img width="118" @(Request.RawUrl.IndexOf("/toys") < 0 ? "height=171" : "") src="@book.ThumbURL"></a> <a title="@Html.Raw(book.BookDescriptionCatalog.Header)" class="bs_name" href="@book.URL">@Html.Raw(book.BookDescriptionCatalog.Header)</a>
+                    @if (book.CanBeSold)
+                    {
+                        <span class="bs_price"><a  href="@book.URL">@book.PriceForClient</a> @(book.IsMaxOverPriced ? "" : "руб.")</span>
+                    }
+                </div>
+  
+            }
+            <br />
+            @Model.PagerMenu(Html)
+        </div>
+    </div>
+</div>

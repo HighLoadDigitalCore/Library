@@ -1,0 +1,60 @@
+﻿@model BookSpecOffer
+@{
+    ViewBag.Title = "Редактирование книги в списке";
+    Layout = "~/Views/Shared/_Master.cshtml";
+}
+<h2>Редактирование книги в списке</h2>
+@using (Html.BeginForm())
+{
+    @Html.ValidationSummary(true)
+
+    <fieldset>
+        @Html.HiddenFor(model => model.ID)
+        @if (Model.ID > 0)
+        {
+            <div id="preview">@Html.Action("Preview", new { id = Model.SaleCatalogID })</div>
+        }
+        else
+        {
+            <div id="preview"></div>
+        }
+
+        <div class="editor-label">
+            @Html.LabelFor(model => model.SaleCatalogID)
+        </div>
+        <div class="editor-field">
+            @Html.EditorFor(model => model.SaleCatalogID)
+            @Html.ValidationMessageFor(model => model.SaleCatalogID)
+        </div>
+        <div class="editor-label">
+            @Html.LabelFor(model => model.MinPrice)
+        </div>
+        <div class="editor-field">
+            @Html.EditorFor(model => model.MinPrice)
+            @Html.ValidationMessageFor(model => model.MinPrice)
+        </div>
+        <div class="editor-label">
+            @Html.LabelFor(model => model.SpecPrice)
+        </div>
+        <div class="editor-field">
+            @Html.EditorFor(model => model.SpecPrice)
+            @Html.ValidationMessageFor(model => model.SpecPrice)
+        </div>
+        <input type="submit" value="Сохранить" />
+    </fieldset>
+}
+<div class="backref">
+    @Html.ActionLink("Назад к списку", "List")
+</div>
+@section scripts {
+    @Scripts.Render("~/bundles/jqueryval")
+    <script type="text/javascript">
+        $().ready(function () {
+            $('#SaleCatalogID').keyup(function() {
+                $.get('/Master/Specs/Preview?id=' + $('#SaleCatalogID').val(), function(data) {
+                    $('#preview').html(data);
+                });
+            });
+        })
+    </script>
+}

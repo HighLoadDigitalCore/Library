@@ -1,0 +1,116 @@
+﻿<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width" />
+    <title>@ViewBag.Title</title>
+    @Styles.Render("~/Content/themes/base/css", "~/Content/css")
+    @Scripts.Render("~/bundles/modernizr")
+</head>
+<body>
+    <table class="master-tbl">
+        <tr>
+            <td class="left-master-tbl">
+                <div class="backref">
+                    <ul>
+                        <li>
+                            @Html.ActionLink("Управление разделами", "Index", "Pages")
+                        </li>
+                        <li>
+                            @Html.ActionLink("Пользователи сайта", "Index", "Users")
+                            <ul>
+                                <li>
+                                    @Html.ActionLink("Импорт данных с сайта Sprinter", "Users", "Import")
+                                </li>
+                            </ul>
+                        </li>
+                        <li>
+                            @Html.ActionLink("Заказы", "Index", "Orders")
+                            <ul>
+                                <li>
+                                    @Html.ActionLink("Импорт данных с сайта Sprinter", "Orders", "Import")
+                                </li>
+                                <li>
+                                    @Html.ActionLink("Регионы доставки", "Index", "Delivery")
+                                </li>
+                                <li>
+                                    @Html.ActionLink("Тарифные планы", "ZoneList", "Delivery")
+                                </li>
+                            </ul>
+                        </li>
+                        <li>
+                            @Html.ActionLink("Текстовые страницы", "Editor", "TextPage")
+                        </li>
+
+                        <li>
+                            @Html.ActionLink("Главная страница", "EditorLists", "MainPage")
+                            <ul>
+                                <li>@Html.ActionLink("Верхний блок", "EditTabs", "MainPage", new { tab = 1 }, null)</li>
+                                <li>@Html.ActionLink("Спецпредложения", "EditTabs", "MainPage", new { tab = 2 }, null)</li>
+                                <li>@Html.ActionLink("Нижний блок", "EditTabs", "MainPage", new { tab = 3 }, null)</li>
+                            </ul>
+                        </li>
+                        <li>
+                            @Html.ActionLink("Управление каталогом", "Index", "Catalog")
+                            <ul>
+                                <li>
+                                    @Html.ActionLink("Управление фильтрами", "FilterEdit", "Catalog")
+                                </li>
+                                <li>
+                                    @Html.ActionLink("Управление тегами", "TagEdit", "Catalog")
+                                </li>
+                                <li>
+                                    @Html.ActionLink("Поставщики и издательства", "PartnerList", "Catalog")
+                                </li>
+                                <li>
+                                    @Html.ActionLink("Наценки (по разделам и тегам)", "MarginEdit", "Catalog")
+                                </li>
+                                <li>
+                                    @Html.ActionLink("Приоритеты (по разделам)", "PriorityEdit", "Catalog")
+                                </li>
+                                <li>
+                                    @Html.ActionLink("Проверка цен", "PriceCheck", "Catalog")
+                                </li>
+                                <li>
+                                    @Html.ActionLink("Утверждение отзывов", "CommentList", "Catalog")
+                                </li>     
+                                <li>
+                                    @Html.ActionLink("Спецпредложения", "List", "Specs")
+                                </li>
+                            </ul>
+                        </li>
+                        <li>
+                            @Html.ActionLink("Импорт каталога", "List", "Import")
+                        </li>
+                        <li>
+                            @Html.ActionLink("Экспорт каталога", "Yandex", "Export")
+                        </li>
+                        <li>
+                            @Html.ActionLink("Управление парсерами", "Index", "Parser")
+                            <ul>
+                                <li>
+                                    @Html.ActionLink("Парсер сайта Urait-book.ru", "Urait", "Parser")
+                                </li>
+                                <li>
+                                    @Html.ActionLink("Обновление каталога цен", "YMLImport", "Parser")
+                                </li>
+                            </ul>
+                        </li>
+                        <li>@Html.ActionLink("Почтовые расылки", "Index", "Mailing")</li>
+                        <li>@Html.ActionLink("Настройки системы", "Index", "Settings")</li>
+                        <li>@Html.ActionLink("Выход", "LogOff", "Account")</li>
+                    </ul>
+                </div>
+            </td>
+            <td style="padding: 0 20px; vertical-align: top;">
+                @RenderBody()
+            </td>
+        </tr>
+    </table>
+    @Scripts.Render("~/bundles/jquery")
+    @Scripts.Render("~/bundles/tree")
+    @Scripts.Render("~/bundles/jqueryui")
+    @RenderSection("scripts", required: false)
+    @Scripts.Render("~/bundles/master")
+</body>
+</html>

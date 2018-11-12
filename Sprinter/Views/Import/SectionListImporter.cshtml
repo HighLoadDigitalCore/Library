@@ -1,0 +1,80 @@
+﻿@model SectionListDownloadInfo
+
+<div class="switcher"><a href="/">Настройка импорта</a></div>
+<div class="switcher-content" style="display: none">
+    <fieldset id="Updater">
+        <h4>Обновление списка категорий:</h4>
+        @using (Html.BeginForm("SectionListImporter", "Import", new { partnerName = Model.PartnerName, returnUrl = Request.RawUrl }, FormMethod.Post, new { enctype = "multipart/form-data" }))
+        {
+
+            if (Model.HaveLink)
+            {
+                <div class="editor-label">
+                    @Html.LabelFor(model => model.URL)
+                </div>
+                <div class="editor-field">
+                    @Html.TextBoxFor(model => model.URL)
+                    @Html.ValidationMessageFor(model => model.URL)
+                </div>
+            }
+            else
+            {
+                <div class="editor-label">
+                    Выберите прайс-лист(zip, rar, xls, csv)
+                </div>
+                <div class="editor-field">
+                    <input type="file" id="file" name="file" size="23" />
+                </div>
+            }
+            <div class="editor-label">
+                @Html.LabelFor(model => model.ClearOld)
+            </div>
+            <div class="editor-field">
+                @Html.CheckBoxFor(model => model.ClearOld)
+                @Html.ValidationMessageFor(model => model.ClearOld)
+            </div>                
+            <input type="submit" value="Обновить список категорий" />
+        }
+    </fieldset>
+    <h2>Список категорий:</h2>
+    <fieldset>
+        <table class="grid odd-grid" style="width: 100%">
+            <tr>
+                <th>Категория в прайс-листе</th>
+                <th>Категория Sprinter</th>
+                <th></th>
+            </tr>
+            @foreach (var category in Model.ImportSettingList)
+            {
+                <tr>
+                    <td>@category.ImportSectionName</td>
+                    <td>
+                        @if (category.PageID.HasValue)
+                        {
+                            <a arg="@category.ID" class="popup-btn" action="save" href="/">@Html.Raw(category.CMSPage.FullPath)</a>
+                            
+                        }
+                        else
+                        {
+                            <a arg="@category.ID" class="popup-btn" action="save" href="/">[Нераспределенные записи]</a>
+                        }
+                    </td>
+                    <td><a href="/" action="del" class="del-btn" arg="@category.ID">удалить</a></td>
+                </tr>
+            }
+        </table>
+        @Model.ImportSettingList.PagerMenu(Html)
+    </fieldset>
+</div>
+<input type="hidden" id="PageListPlain" />
+<input type="hidden" id="TargetID" />
+<div id="popup" title="Выберите категорию" style="display: none">
+    <div id="tree-filter" style="overflow-y: scroll;overflow-x: hidden; height: 520px">
+    </div>
+    <div class="btns-list">
+        <input type="submit" value="Сохранить" style="float: right" />
+    </div>
+</div>
+<script type="text/javascript">
+    var singleSelection = true;
+</script>

@@ -1,0 +1,28 @@
+﻿@model RestorePassForm
+
+<div id="rememberpass-modal-content" style="@(IsPost ? "" : "display: none;")">
+    <div class="modal_column">
+
+        <h4>Восстановление пароля</h4>
+        <p>Если вы забыли пароль, укажите свой Email, который вы использовали при регистрации, и мы пришлем ваш пароль. </p>
+
+
+        @if (Model.IsSent)
+        {
+            <div class="sent">@Model.ResultMessage</div>
+        }
+        else
+        {
+            using (Ajax.BeginForm("RestorePass", "Forms", new AjaxOptions() { HttpMethod = "POST", InsertionMode = InsertionMode.Replace, UpdateTargetId = "rememberpass-modal-content" }))
+            {
+            @Html.ValidationSummary(true)
+            <label for="Email">@Html.DisplayNameFor(model => model.Email) @Html.EditorFor(model => model.Email)</label>
+            <p>
+                <input type="submit" value="Отправить запрос" />
+            </p>
+
+            }
+        }
+    </div>
+
+</div>

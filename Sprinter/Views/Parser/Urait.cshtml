@@ -1,0 +1,56 @@
+﻿@{
+    ViewBag.Title = "Urait";
+    Layout = "~/Views/Shared/_Master.cshtml";
+}
+@model ParseringInfo
+<h2>
+    Парсер сайта Urait-book.ru</h2>
+@using (Html.BeginForm())
+{
+    @Html.ValidationSummary(true)
+    <fieldset>
+        <br />
+        <input type="submit" value="@((!Model.StartDate.HasValue || Model.Break || (Model.EndDate.HasValue)) ? "Запустить обработку" : "Прервать обработку")" />
+        <br />
+        <br />
+        <div style="display: none" class="message-cell">
+            <div class="dirs">
+                Обработано&nbsp;<b></b>&nbsp;страниц каталога</div>
+            <div class="created">
+                Создано&nbsp;<b></b>&nbsp;записей</div>
+            <div class="updated">
+                Обновлено&nbsp;<b></b>&nbsp;записей</div>
+            <div class="errors">
+                Пропущено из-за ошибок&nbsp;<b></b>&nbsp;записей</div>
+            <br />
+            <div class="message-box">
+            </div>
+        </div>
+    </fieldset>
+}
+@section scripts
+{
+    <script type="text/javascript">
+        var refreshURL = '@Url.Action("loadInfo", "Parser")';
+        $().ready(function () {
+            loadInfo();
+        });
+
+        function loadInfo() {
+            $.get(refreshURL, { name: 'urait' }, function (data) {
+                if (!data.StartDate)
+                    return;
+                $('.message-cell').show();
+                $('.message-box').html(data.MessageList);
+                $('.dirs b').html(data.Dirs);
+                $('.created b').html(data.Created);
+                $('.updated b').html(data.Updated);
+                $('.errors b').html(data.Errors);
+
+                if (!data.EndDate)
+                    setTimeout('loadInfo();', 2000);
+            });
+
+        }
+    </script>
+}

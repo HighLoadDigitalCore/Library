@@ -1,0 +1,21 @@
+﻿
+@{
+    ViewBag.Title = "Просмотр заказа";
+    Layout = "~/Views/Shared/_Master.cshtml";
+}
+
+<h2>Просмотр заказа</h2>
+
+
+@using (Html.BeginForm())
+{
+    @Html.ValidationSummary(true)
+
+    <fieldset>
+        @Html.Raw(ViewBag.Data)
+    </fieldset>
+}
+
+<div class="backref">
+    @Html.ActionLinkQuery("Назад к списку", "Index", "Orders", new[] { "query", "page" })
+</div>

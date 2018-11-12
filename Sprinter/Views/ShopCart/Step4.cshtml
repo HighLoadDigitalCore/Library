@@ -1,0 +1,114 @@
+﻿@model ShopCart
+<div class="your-order">
+    <h3>Ваш заказ:<a href="@Model.Steps.First().Url">изменить</a></h3>
+    <table>
+        @foreach (var item in Model.ActiveBooks)
+        {
+            <tr>
+                <td width="100px">
+                    <a href="@item.BookSaleCatalog.URL">
+                        <img width="84" height="129" src="@item.BookSaleCatalog.GetPreview(84)"></a></td>
+                <td width="35%">
+                    <h2>@Html.Raw(item.BookSaleCatalog.BookDescriptionCatalog.Header)<br />
+                    </h2>
+                    <span class="name">@item.BookSaleCatalog.BookDescriptionCatalog.AuthorsByComma</span>
+                    <b class="code">Код товара: @item.BookSaleCatalog.SprinterCode</b>
+                    @*<span class="date">Дата отправки: @DateTime.Now.AddDays(1).ToString("dd.MM.yyyy")</span>*@
+                </td>
+                <td><span class="price"><strong>@(item.PriceForOffer.ForDisplaing())</strong> руб</span></td>
+                <td>Количество: <span class="quantity">@item.Count</span></td>
+                <td>Итого:<span class="price"><strong>@item.Sum.ForDisplaing()</strong> руб</span></td>
+            </tr>
+        }
+    </table>
+    <div class="total">
+        <p><strong>ИТОГО К ОПЛАТЕ:</strong> <span class="price"><strong>@Model.ShopCartRight.FinalSum.ForDisplaing()</strong> руб</span></p>
+    </div>
+    <div class="data">
+        <div class="column-data">
+            <h3>Доставка:<a href="@Model.Steps.Skip(2).First().Url">изменить</a></h3>
+            <p><strong>@Model.SelectedProvider.Name </strong></p>
+            @if (Model.SelectedProvider.ShowAdress)
+            {
+                if (Model.SelectedProvider.ShowIndex)
+                {
+                <p>Индекс: <strong>@(Model.GetField<string>("DeliveryIndex"))</strong></p>
+                }
+                if (Model.SelectedProvider.ShowRegions)
+                {
+                <p>@Model.SelectedProvider.ListText: <strong>@Model.SelectedRegion.Name</strong></p>
+                }
+                else if (Model.SelectedProvider.ShowTown)
+                {
+                <p>Город: <strong>@(Model.GetField<string>("DeliveryTown"))</strong></p>
+                }
+                else if (!Model.SelectedProvider.DefaultCity.IsNullOrEmpty())
+                {
+                <p>Город: <strong>@Model.SelectedProvider.DefaultCity</strong></p>
+                }
+                
+                <p>Улица: <strong>@(Model.GetField<string>("DeliveryStreet"))</strong></p>
+                <p>Дом: <strong>@(Model.GetField<string>("DeliveryHouse"))</strong></p>
+                <p>Квартира/офис: <strong>@(Model.GetField<string>("DeliveryFlat"))</strong></p>
+                <p>Корпус:  <strong>@(Model.GetField<string>("DeliverySection"))</strong></p>
+
+                if (Model.SelectedProvider.ShowTime)
+                {
+                <p>Подъезд: <strong>@(Model.GetField<string>("DeliveryDoorway"))</strong></p>
+                <p>Этаж: <strong>@(Model.GetField<string>("DeliveryFloor"))</strong></p>
+                <p>Удобное время доставки: <strong>@(Model.GetField<string>("DeliveryTime"))</strong></p>
+                <p>Комментарии для службы доставки: <strong>@(Model.GetField<string>("DeliveryComment"))</strong></p>
+                }
+            }
+        </div>
+        <div class="column-data">
+            <h3>Персональная информация:<a href="@Model.Steps.Skip(3).First().Url">изменить</a></h3>
+            <p>Имя: <strong>@(Model.GetField<string>("UserFirstName"))</strong></p>
+            <p>Фамилия:  <strong>@(Model.GetField<string>("UserSurname"))</strong></p>
+            <p>Отчество:  <strong>@(Model.GetField<string>("UserSecName"))</strong></p>
+            <p>Телефон: <strong>@(Model.GetField<string>("UserPhone"))</strong></p>
+            <p>Мобильный: <strong>@(Model.GetField<string>("UserMobile"))</strong></p>
+            @if (Model.SelectedProvider.ShowOrgData && Model.GetField<bool>("ShowOrg"))
+            {
+                <br />
+                <h3>Информация о юридическом лице:</h3>
+                <p>Название:<strong>@(Model.GetField<string>("OrgName"))</strong></p>
+                <p>ИНН:<strong> @(Model.GetField<string>("OrgINN"))</strong></p>
+                <p>КПП:<strong>@(Model.GetField<string>("OrgKPP"))</strong></p>
+                <p>К/с:<strong>@(Model.GetField<string>("OrgKS"))</strong></p>
+                <p>Р/с:<strong> @(Model.GetField<string>("OrgRS"))</strong></p>
+                <p>Банк:<strong> @(Model.GetField<string>("OrgBank"))</strong></p>
+                <p>БИК:<strong> @(Model.GetField<string>("OrgBik"))</strong></p>
+                <p>Адрес юр.:<strong> @(Model.GetField<string>("OrgJurAddr"))</strong></p>
+                <p>Адрес факт.:<strong>@(Model.GetField<string>("OrgFactAddr"))</strong></p>
+                <p>Генеральный дир.:<strong> @(Model.GetField<string>("OrgDirector"))</strong></p>
+                <p>Главный бух.:<strong> @(Model.GetField<string>("OrgAccountant"))</strong></p>
+
+            }
+@*
+            <p>
+                <label>
+                    <input type="checkbox">
+                    &nbsp;Отправлять уведомления о заказе по СМС</label>
+            </p>
+*@
+            @if (Model.SelectedPayment.ID > 0)
+            {
+                <h3>Способ оплаты:<a href="@Model.Steps.Skip(3).First().Url">изменить</a></h3>
+                <p><strong>@Model.SelectedPayment.Name</strong></p>
+@*
+                <p>
+                    <strong>Без предоплаты </strong>
+                    <br>
+                    <span>Предоплата даст вам дополнительное приемущество.
+                        <br>
+                        <a href="#">Не хотите внести предоплату?</a></span>
+                </p>
+*@
+            }
+        </div>
+        <div class="bottom-data">
+            <p><span>Размещая заказ на сайте sprinter.ru вы подтверждаете согласие с <a target="_blank" href="/order/oferta">договором оферты</a></span><a class="offer" href="/order?step=5"> Отправить заказ в обработку</a></p>
+        </div>
+    </div>
+</div>

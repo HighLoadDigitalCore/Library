@@ -1,0 +1,109 @@
+﻿@{
+    bool isCart;
+    if (ViewBag.IsCart != null)
+    {
+        isCart = (bool) ViewBag.IsCart;
+    }
+    else
+    {
+        isCart = Request.RawUrl.Contains("/order");
+    }
+}
+<div class="@(isCart?"main":"cart-cell")">
+    <div class="@(isCart?"m-container":"")">
+        <div class="@(isCart?"m-content":"")">
+            @if (isCart)
+            {
+                @Html.Action("OrderSteps", "CommonBlocks")
+            }
+            @Html.Action((ViewData.ContainsKey("Step")?("Step"+ViewData["Step"]): OrderSteps.CurrentStepAction), "ShopCart")
+        </div>
+
+    </div>
+    @if (isCart)
+    {
+        @Html.Action("ShopCartRight", "CommonBlocks")
+    }
+    
+    @*<div class="content_block">
+					<ul class="menu_line">
+						<li class="ml_active"><a href="#">Спринтер рекомендует именно вам<span class="arrow"></span></a></li>
+						<li class="ml_link"><a class="ml_link" href="#">Похожие товары</a></li>
+					</ul>
+					<div class="item">
+						<div class="books_sale_line">
+						
+							<div class="bs">
+								<a class="bs_img" href="#"><img src="i/pic3.jpg"></a>
+								<a class="bs_name" href="#">7 навыков высокоэффективных...</a>
+								<span class="bs_price"><a href="#">200</a> руб.</span>
+							</div>
+							<div class="bs">
+								<a class="bs_img" href="#"><img src="i/pic3.jpg"></a>
+								<a class="bs_name" href="#">7 навыков высокоэффективных...</a>
+								<p class="bs_price_old"><span>595</span> руб.</p>
+								<span class="bs_price"><a href="#">200</a> руб.</span>
+							</div>
+							<div class="bs">
+								<a class="bs_img" href="#"><img src="i/pic3.jpg"></a>
+								<a class="bs_name" href="#">7 навыков высокоэффективных...</a>
+								<span class="bs_price"><a href="#">200</a> руб.</span>
+							</div>
+							<div class="bs">
+								<a class="bs_img" href="#"><img src="i/pic3.jpg"></a>
+								<a class="bs_name" href="#">7 навыков высокоэффективных...</a>
+								<span class="bs_price"><a href="#">200</a> руб.</span>
+							</div>
+							<div class="bs">
+								<a class="bs_img" href="#"><img src="i/pic3.jpg"></a>
+								<a class="bs_name" href="#">7 навыков высокоэффективных...</a>
+								<span class="bs_price"><a href="#">200</a> руб.</span>
+							</div>
+							<div class="bs">
+								<a class="bs_img" href="#"><img src="i/pic3.jpg"></a>
+								<a class="bs_name" href="#">7 навыков высокоэффективных...</a>
+								<span class="bs_price"><a href="#">200</a> руб.</span>
+							</div>
+							<div class="bs">
+								<a class="bs_img" href="#"><img src="i/pic3.jpg"></a>
+								<a class="bs_name" href="#">7 навыков высокоэффективных...</a>
+								<span class="bs_price"><a href="#">200</a> руб.</span>
+							</div>
+							<div class="bs">
+								<a class="bs_img" href="#"><img src="i/pic3.jpg"></a>
+								<a class="bs_name" href="#">7 навыков высокоэффективных...</a>
+								<p class="bs_price_old"><span>595</span> руб.</p>
+								<span class="bs_price"><a href="#">200</a> руб.</span>
+							</div>
+							<div class="bs">
+								<a class="bs_img" href="#"><img src="i/pic3.jpg"></a>
+								<a class="bs_name" href="#">7 навыков высокоэффективных...</a>
+								<span class="bs_price"><a href="#">200</a> руб.</span>
+							</div>
+							<div class="bs">
+								<a class="bs_img" href="#"><img src="i/pic3.jpg"></a>
+								<a class="bs_name" href="#">7 навыков высокоэффективных...</a>
+								<span class="bs_price"><a href="#">200</a> руб.</span>
+							</div>
+							<div class="bs">
+								<a class="bs_img" href="#"><img src="i/pic3.jpg"></a>
+								<a class="bs_name" href="#">7 навыков высокоэффективных...</a>
+								<span class="bs_price"><a href="#">200</a> руб.</span>
+							</div>
+							<div class="bs">
+								<a class="bs_img" href="#"><img src="i/pic3.jpg"></a>
+								<a class="bs_name" href="#">7 навыков высокоэффективных...</a>
+								<span class="bs_price"><a href="#">200</a> руб.</span>
+							</div>
+							<div class="bs">
+								<a class="bs_img" href="#"><img src="i/pic3.jpg"></a>
+								<a class="bs_name" href="#">7 навыков высокоэффективных...</a>
+								<span class="bs_price"><a href="#">200</a> руб.</span>
+							</div>
+						</div>
+						
+						
+					</div>
+					</div>*@
+</div>
+

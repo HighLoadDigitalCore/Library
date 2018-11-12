@@ -1,0 +1,55 @@
+﻿@{
+    ViewBag.Title = "Список регионов";
+    Layout = "~/Views/Shared/_Master.cshtml";
+}
+@model IEnumerable<OrderDeliveryRegion>
+
+@if (ViewBag.Provider != null)
+{
+    <h2>Настройка</h2>
+    using (Html.BeginForm("Regions", "Delivery", new { pid = ViewBag.Provider.ID }, FormMethod.Post))
+    {
+    @Html.ValidationSummary(true)
+    <fieldset>
+        <div class="editor-label">
+            Минимальная сумма заказа для бесплатной доставки
+        </div>
+        <div class="editor-field">
+            @Html.TextBox("DiscountThreshold", (decimal?)ViewBag.Provider.DiscountThreshold)
+        </div>
+        <p>
+            <input type="submit" value="Сохранить" />
+        </p>
+    </fieldset>
+    }
+}
+
+<h2>Список регионов</h2>
+<fieldset>
+    <table style="width: 100%" class="grid">
+        <tr>
+            <th>Название</th>
+            <th>Стоимость доставки (базовая)</th>
+            <th>SprinterUID</th>
+            <th></th>
+        </tr>
+        @foreach (var region in Model)
+        {
+            <tr>
+                <td>
+                    @Html.ActionLink(region.Name, "Edit", new { pid = Request.QueryString["pid"], rid = region.ID })
+                </td>
+                <td>@region.Price</td>
+                <td>@region.ImportID</td>
+                <td>@Html.ActionLink("удалить", "Delete", new { pid = Request.QueryString["pid"], rid = region.ID })</td>
+            </tr>
+        }
+    </table>
+
+</fieldset>
+<div class="backref">
+    @Html.ActionLink("Добавить регион", "Edit", new { pid = Request.QueryString["pid"], rid = 0 })
+</div>
+<div class="backref">
+    @Html.ActionLink("Назад к списку", "Index")
+</div>

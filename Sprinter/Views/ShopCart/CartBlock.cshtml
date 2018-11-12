@@ -1,0 +1,31 @@
+﻿@model ShopCart
+@*<span><a href="#">Посмотреть личные рекомендации</a></span><span> →</span>*@
+<div class="basket">
+    <h4>Ваша корзина</h4>
+    @if (Model.AllTypesCount == 0)
+    {
+
+        <p>
+            В вашей корзине пусто.
+     <br>
+            Это надо срочно исправить!
+        </p>
+
+
+    }
+    else if (Model.TotalCount > 0)
+    {
+        <p>
+            В корзине <b>@Model.TotalCount</b> товар@(Model.TotalCount.GetStringPostfix(WordKind.Man))<br />
+            на сумму <b>@Model.TotalSum.ForDisplaing()</b> рублей
+        </p>
+        <span><a href="/order">Оформить заказ</a></span><span> →</span>
+    }
+    else if (Model.DelayesBooks.Any())
+    {
+        <p>
+            В корзине <b>@Model.DelayesBooks.Count()</b> отложенн@(Model.DelayesBooks.Count() == 1 ? "ый" : "ых") товар@(Model.DelayesBooks.Count().GetStringPostfix(WordKind.Man))<br />
+        </p>
+        <span><a href="/order">Продолжить покупку</a></span><span> →</span>
+    }
+</div>

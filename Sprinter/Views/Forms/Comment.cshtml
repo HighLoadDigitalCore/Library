@@ -1,0 +1,28 @@
+﻿@model CommentForm     
+<div id="comment-modal-content" style="@(IsPost ? "" : "display: none;")@(HttpContext.Current.User.Identity.IsAuthenticated?"height:230px;":"height:320px;")" >
+    <div id="Comment">
+        <div class="modal_column">
+            <h4 style="margin-bottom: 10px">Оставить отзыв</h4>
+            <p>на @Model.TargetBook.GoodType<b>«@Model.TargetBook.Header»</b></p>
+            @if (Model.IsSent)
+            {
+                <div class="sent">@Html.Raw(Model.ResultMessage)</div>
+            }
+            else
+            {
+                using (Ajax.BeginForm("Comment", "Forms", new AjaxOptions() { HttpMethod = "POST", InsertionMode = InsertionMode.Replace, UpdateTargetId = "Comment" }))
+                {
+                    @Html.Raw(HttpUtility.HtmlDecode((Html.ValidationSummary(true)??new MvcHtmlString("")).ToString()))
+                    if (!HttpContext.Current.User.Identity.IsAuthenticated)
+                    {
+                        <label for="Name">@Html.DisplayNameFor(model => model.Name) @Html.EditorFor(model => model.Name)</label>
+                        <label for="Mail">@Html.DisplayNameFor(model => model.Mail) @Html.EditorFor(model => model.Mail)</label>
+                    }
+                    <label for="Comment">@Html.DisplayNameFor(model => model.Comment) @Html.TextAreaFor(model => model.Comment)</label>
+                    <p>
+                        <input type="submit" value="Отправить" />
+                    </p>
+
+                }
+            } 
+        </div></div></div>

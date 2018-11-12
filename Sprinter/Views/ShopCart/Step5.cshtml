@@ -1,0 +1,18 @@
+﻿<div class="your-order">
+    @if (ViewData.ModelState.IsValid)
+    {
+        <h3>Ваш заказ поступил на обработку.</h3>
+         /*Наш менеджер скоро свяжется с Вами.<br />
+            Спасибо за покупку!*/
+        <br/>
+        <h4>
+            @Html.Raw(ViewBag.PaymentMessage)
+        </h4>
+    }
+    else
+    {
+        <h3 style="color: orangered">
+            @Html.ValidationSummary(true)
+        </h3>
+    }
+</div>

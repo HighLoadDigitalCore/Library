@@ -1,0 +1,43 @@
+﻿@{
+    ViewBag.Title = "Редактирование списка книг";
+    Layout = "~/Views/Shared/_Master.cshtml";
+}
+@model IEnumerable<BooksOnMain>
+<h2>
+    @ViewBag.Header</h2>
+<fieldset>
+    <table class="grid" style="width: 100%">
+        <tr>
+            <th>
+                Название книги
+            </th>
+            <th>
+                ISBN
+            </th>
+            <th>Группа</th>
+            <th>
+            </th>
+        </tr>
+        @foreach (var booksOnMain in Model)
+        {
+            <tr>
+                <td>
+                    @Html.ActionLink(booksOnMain.BookSaleCatalog.BookDescriptionCatalog.Header, "EditEntry", new { tab = Request["tab"], entryId = booksOnMain.ID }, null)
+                </td>
+                <td>
+                    @booksOnMain.BookSaleCatalog.BookDescriptionCatalog.ISBN
+                </td>
+                <td>
+                    @((ViewBag.SubGroupList as SelectList).First(x => x.Value.ToInt() == booksOnMain.SubGroupNum).Text)
+                </td>
+                <td>
+                    @Html.ActionLink("удалить", "DeleteEntry", "MainPage", new { tab = Request["tab"], entryId = booksOnMain.ID }, null)
+                </td>
+            </tr>
+        }
+    </table>
+</fieldset>
+<br />
+<div class="backref">
+    @Html.ActionLink("Добавить книгу", "EditEntry", "MainPage", new { tab = Request["tab"], entryId = 0 }, null)
+</div>

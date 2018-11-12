@@ -1,0 +1,22 @@
+﻿@model FeedBackForm
+<div id="FeedBack">
+    @if (Model.IsSent)
+{
+        <div class="sent">@Model.ResultMessage</div>
+}
+else
+{
+    using (Ajax.BeginForm("FeedBack", "Forms", new AjaxOptions() { HttpMethod = "POST", InsertionMode = InsertionMode.Replace, UpdateTargetId = "FeedBack" }))
+    {
+        @Html.ValidationSummary(true)
+        <label for="UserName">@Html.DisplayNameFor(model => model.UserName) @Html.EditorFor(model => model.UserName)</label>
+        <label for="Mail">@Html.DisplayNameFor(model => model.Mail) @Html.EditorFor(model => model.Mail)</label>
+        <label for="UserPhone">@Html.DisplayNameFor(model => model.UserPhone) @Html.EditorFor(model => model.UserPhone)</label>
+        <label for="Message">@Html.DisplayNameFor(model => model.Message) @Html.TextAreaFor(model => model.Message)</label>
+        <p>
+            <input type="submit" value="Отправить" />
+        </p>
+
+    }
+}
+</div>

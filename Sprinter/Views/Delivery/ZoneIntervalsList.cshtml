@@ -1,0 +1,38 @@
+﻿@{
+    ViewBag.Title = "Список цен для тарифного плана";
+    Layout = "~/Views/Shared/_Master.cshtml";
+}
+@model IEnumerable<OrderDeliveryZoneInterval>
+@if (Model.Any())
+{
+    <h2>Список цен для тарифного плана @Model.First().OrderDeliveryZone.Name</h2>
+    <fieldset>
+        <table class="grid" style="width: 100%">
+            <tr>
+                <th>Нижняя граница (кг или км)</th>
+                <th>Верхняя граница (кг или км)</th>
+                <th>Стоимость</th>
+                <th></th>
+                <th></th>
+            </tr>
+            @foreach (var interval in Model)
+            {
+                <tr>
+                    <td>@interval.MinInterval</td>
+                    <td>@interval.MaxInterval</td>
+                    <td>@interval.Cost</td>
+                    <td>@Html.ActionLink("редактировать", "EditZoneInterval", "Delivery", new { zid = interval.ZoneID, id = interval.ID }, null)</td>
+                    <td>@Html.ActionLink("удалить", "DeleteZoneInterval", "Delivery", new { zid = interval.ZoneID, id = interval.ID }, null)</td>
+                </tr>
+            }
+        </table>
+
+    </fieldset>
+
+}
+<div class="backref">
+    @Html.ActionLink("Добавить интервал", "EditZoneInterval", "Delivery", new { zid = Request["zid"], id = 0 }, null)
+</div>
+<div class="backref">
+    @Html.ActionLink("Вернуться назад", "ZoneList", "Delivery")
+</div>
